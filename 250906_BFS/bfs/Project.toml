@@ -1,0 +1,16 @@
+name = "bfs"
+uuid = "737b152d-0212-454d-9c19-2658b509f3f2"
+authors = ["Natasha Hirt <nhirt@mit.edu>"]
+version = "0.1.0"
+
+[deps]
+GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
+GraphMakie = "1ecd5474-83a3-4783-bb4f-06765db800d2"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[compat]
+GLMakie = "0.13.6"
+GraphMakie = "0.6.1"
+Graphs = "1.13.1"
+Random = "1.11.0"
