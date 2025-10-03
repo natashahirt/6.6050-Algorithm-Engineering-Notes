@@ -29,6 +29,6 @@ display(f)
 
 parents = bfs(g, method=:bottomup)
 
-f, ax = animate_bfs(g, method=:bottomup, dt=0.1, hybrid=false, parallel=false, savepath = "./bfs/animations/serial/bfs_bu_tree_lowres.gif")
+f, ax = animate_bfs(g, method=:bottomup, dt=0.1, hybrid=false, parallel=true, savepath = "./bfs/animations/serial/bfs_bu_kronecker_parallel_v_and_n.gif")
 
 GC.gc()

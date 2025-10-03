@@ -1,0 +1,136 @@
+\section{A functional approach to external graph algorithms}
+
+\textbf{Author(s):} J. Abello, A. L. Buchsbaum, J. R. Westbrook
+
+\subsection{General Notes}
+
+% Add your general notes here
+
+\subsection{Paper Review}
+
+\subsubsection{Motivation}
+
+\begin{itemize}
+    \item Classical algorithms do not scale when data exceeds main memory limits
+    \item Need to extend to external memory but not always easy with RAM model 
+    \item Graphs do not have data locality required for efficient external-memory extensions
+\end{itemize}
+
+\subsubsection{Previous approaches}
+
+PRAM simulation (Chiang et al.)
+\begin{itemize}
+    \item Simulate CRCW PRAM algorithm using one processor and external disk to give general method for constructing external graph algorithms from PRAM graph algorithms
+    \item Simulation maintains copy of main memory in array A. Array sorted by memory address. Also state array T of N elements. Location T[i] contains current state of processor i
+    \item PRAM step:
+    \begin{enumerate}
+        \item D = list of tuples (d(i), i) where d(i) is memory address and i is processor number. Sort D by memory address (group all processors that want to read from the same location)
+        \item Scan and create read list R, list of current values. R is tuples (r(i), i) where r(i) is value and i is processor number
+        \item Sort R by processor number i (prioritize processor 1 over 2, e.g.)
+        \item Scan through R. For each processor i T[i] <- r(i) i.e. the value it read in this step
+        \item Results get back to the right processors in order. Converts parallel operations into sequential operatons that can be run when there is no parallel hardware available. 
+    \end{enumerate}
+\end{itemize}
+
+Buffering data structures
+\begin{itemize}
+    \item Buffer trees: sequences of insert, delete, deletemin operations on N elements in $O((1/B)\log_{M/B}\text{(N/B)})$. Better than O(N) I/Os for individual processing.
+    \begin{itemize}
+        \item Internal node has a buffer storing pending operations (buffer size cM for some 0 < c <1)
+        \item Leaves contain data
+        \item When buffer fills up, operations are pushed down to child nodes
+        \item Operations are processed in batches, trickle down tree as buffers fill up
+    \end{itemize}
+    \item Tournament trees: maintain elements 1 to N subject to delete, deletemin, and update. Update takes (x,k) and sets key of x to min{key(x), k}
+    \begin{itemize}
+        \item Internal nodes represent tournaments between its children (winner is promoted)
+        \item Deleting a node replays tournaments along path from deleted leaf back to root
+        \item Good for algorithms that need to find and remove minimum elements when data is toolarge for main memory (updates only require traversing one path in the tree)
+    \end{itemize}
+    \item Not functional: tree-structures require in situ replacement of nodes on disk
+    \item Could copy, but significant I/O overhead to change pointers to point to new complexity
+\end{itemize}
+
+\subsubsection{Key Ideas}
+
+\begin{itemize}
+    \item Divide-and-conquer approach for designing external graph algorithms without special data structures
+    \item Functional: each algorithm is a sequence of functions applied to input data and producing output data. Information remains unchanged. 
+    \item I/O model
+    \begin{itemize}
+        \item M = number of items that can fit in main memory (10e9)
+        \item B = number of items per disk block (10e3); number of items that can be read/written in single I/O operation; O($N log^i(N)$)
+        \item N = number of items in instance
+        \item In general, 1 < B < M/2 < M < N
+        \item Functional I/O only makes functional transformations (no transformations to data)
+    \end{itemize}
+    \item Primitives (scanning, sorting)
+    \begin{itemize}
+        \item scan(N) = ceil(N/B) -- reading N contigiuous items from disk, cost is ceil(N/B) I/O operations (need to read that many blocks to get all N items)
+        \item sort(N) = $\Theta(\text{N/B} \cdot \log_{M/B}\text{(N/B)})$ -- sorting N items using external memory. N/B is number of blocks of data, M/B is number of blocks that fit in memory  simultaneously.
+        \item Once data is in RAM (main memory) computation is free. Only disk operations matter for complexity.
+        \item Goal is to replace traditional N with N/B (process whole blocks at once), $\log_{M/B}$ instead of $\log_2$ i.e. dividing problems into M/B subproblems at the same time (grows slower than log)
+    \end{itemize}
+\end{itemize}
+
+Functional graph transformations
+\textit{Connected components}
+\begin{itemize}
+    \item Graph G of rooted stars, if root of $v$ $r(v) == r(u)$ then $v$ and $u$ are in the same 
+    \item Contraction is performed using new supervertex to delete ${x, y}$ that absorbs all of their edges.
+    \item Lemma 3.1: if each pair in $E\prime$ contains two vertices in the same connected component in $G$, for any $u, v \in V$, $u$ and $v$ are in the same connected component in $G$ if and only if $s(u)$ and $s(v)$ are in the same connected component in $G\prime$ (which is $=G/E\prime$) i.e. contraction preserves connectivity information and only safe contractions are allowed.
+    \item Divide-and-conquer reduces problem size at each step through contraction, to ultimately create a problem that can be solved in RAM/fit in memory PLUS random-access graph problem is turned into a structured problem using stars
+\end{itemize}
+
+Functional approach to designing external graph algorithms
+\begin{enumerate}
+    \item Apply selection function to G to get S(G) to get G1 \textit{subset of half the edges of G}
+    \item Combine G and solution fp(G1) \textit{forest of rooted stars corresponding to connected components of G} using transformation T1 to get subgraph G2 \textit{contraction of G with respect to connected components of S(G)}
+    \item Map solution from fp(G1) and fp(G2) to solution in G to get fp(G) using T2 \textit{re-expansion of rooted stars}
+\end{enumerate}
+\begin{itemize}
+    \item Transformations (e.g. contractions) must preserve solutions and non-solutions. You can't have non-planarity in a contracted graph 
+    \item Functional if S, T1, T2 can be implemented without side effects on inputs
+\end{itemize}
+
+Deterministic algorithms
+
+
+\subsubsection{Results}
+
+\begin{itemize}
+    \item 
+\end{itemize}
+
+\subsubsection{Novelty}
+
+% Add novelty notes here
+
+\subsubsection{Strengths/Weaknesses}
+
+% Add strengths and weaknesses here
+
+\subsubsection{Ideas for Improving Techniques/Evaluation}
+
+% Add improvement ideas here
+
+\subsubsection{Open Problems/Directions for Future Work}
+
+% Add open problems and future work here
+
+\newpage
+
+\subsection{Paper Review}
+\subsubsection{A functional approach to external graph algorithms}
+
+Abello, Buchsbaum, and Westbrook's paper presents, as the title helpfully indicates, a functional approach to external graph algorithms. It is characterized by the concision and power of the functions that are exposed to the user, including primitives (scan, sort, bucket) and transformations (contract, relabel, select). This approach differs from previous methods, which typically operate using in-place modifications of the graph, by completely avoiding mutation of the input data. This property is desirable in external memory algorithms because the bulk of running time is consumed by I/O operations that read and write to disk (in fact, they contribute so much to complexity that the authors approximate operations on RAM as "free" relative to the cost of I/O operations.)
+
+Central to the challenge that the paper addresses is how primitives batch the data so that $B$ items exist in a single disk block, that is, the number of items that are written or read per I/O operation. In the use-cases this method is designed for, value $B$ is generally less than the number of items in main memory $M$, which in turn is less than the total number of items in an instance $N$. For example, the simplest exposed primitive \texttt{scan(N)} takes $\lceil N/B \rceil$ I/O operations to read all $N$ items, as it reads from disk in batches of size $B$. In general, these methods allow us to reduce $N$ I/O cost to $N/B$, and to reduce the number of I/O passes to $\log_{M/B}{N/B}$ instead of $log_2{N}$. \footnote{The authors have an interesting discussion about the way parallel algorithms can be simulated on serial hardware using buffering data structures.}
+
+The algorithms presented in this paper work by recursively reducing the size of the problem until it fits in main memory and computations can be efficiently performed on the reduced graph using RAM. Once performed, the graph is expanded out again. This divide-and-conquer approach can be applied to many algorithms in the literature, including connected components, minimum spanning forests, bottleneck minimum spanning forests (first implementation for external memory), maximal matching (first implementation for external memory), and maximal independent sets (first implementation for external memory). All of these algorithms operate on properties that are retained over the course of recursive contraction. The authors give the example of an algorithm that requires information about graph planarity as something that could not be processed by their method, as local differences in planarity would be lost as the graph is contracted. 
+
+In addition to being novel, the implementations are competitive with other examples in the literature. Deterministic connected components and maximum spanning forests slightly improve over the asymptotic I/O bounds of earlier work, and the randomized algorithms at least match earlier I/O bounds. The semi-external model, which assumes that (much like social networks and other real-world graphs) the number of edges can sometimes far exceed the number of vertices, so stores vertices in local memory but does not store edges, further improves on these bounds.
+
+I appreciate the intuition of the paper's solution -- take existing graph problems and circumvent I/O overhead by doing as little external memory work as possible, and batching the data that you do read/write so that you perform as few I/O operations as possible. The authors also present a compelling suite of applications that demonstrate how rich their implementation is. 
+
+The method is tantalizing and introduces many avenues for future work around the implementation of other algorithms (shortest path etc.) in a functional framework. I would also love to see the semi-external applications applied to real-world, large-scale, small-world networks. It seems as though there could be demonstrable and dramatic improvements to previous external-memory solutions to parsing these large networks. 

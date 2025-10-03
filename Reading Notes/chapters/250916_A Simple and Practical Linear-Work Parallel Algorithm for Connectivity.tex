@@ -1,0 +1,121 @@
+\section{A Simple and Practical Linear-Work Parallel Algorithm for Connectivity}
+
+\textbf{Author(s):} Julian Shun, Laxman Dhulipala, Guy Blelloch
+
+\subsection{General Notes}
+
+% Add your general notes here
+
+\subsection{Paper Review}
+
+\subsubsection{Motivation}
+
+Graph connectivity is an important problem. Sequentially, it's manageable in linear work. So far, parallel algorithms either (a) require super-linear work or (b) are very complicated (poly-logarithmic-depth).
+
+\textbf{Graph connectivity} : labelling vertices in a graph to distinguish between those that belong to one connected component or other.
+
+\textbf{Past approaches}
+\begin{itemize}
+    \item Sequential: BFS and DFS have linear work
+    \item Simple but super-linear work parallel algorithms:
+    \begin{itemize}
+        \item Shiloach and Vishkin, Awerbuch and Shiloach, combine vertices into trees so that at end of algorithm vertices in the same component belong to the same tree. Number of trees decreases by constant factor each iteration, but constant fraction of edges is not guaranteed to be removed. $O(m \log n)$ work.
+        \item Reif and Phillips contract vertices in same component together, constant fraction of vertices decrease per iteration, do not guarantee that constant fraction of edges are removed. Also $O(m \log n)$ expected work.
+    \end{itemize} 
+    \item Parallel BFS: linear work, but depth is proportional to sum of diameters of connected components. Not efficient except for low-diameter graphs with few connected components.
+\end{itemize}
+
+\subsubsection{Key Ideas}
+
+First work-efficient parallel graph connectivity algorithm with an implementation
+
+\begin{itemize}
+    \item Based on parallel algorithm for generating low-diameter decompositions of graphs (Miller et al.). N edges between partitions is also small. Diameter is $O(\log n/\beta)$, n edges between partitions is $O(\beta m)$ for $0 \le \beta \le$. Linear work, $O(\log^2 n/ \beta)$ depth with high probability. Performs BFS from multiple sources in parallel, start times drawn from exponential distribution. BFS searches need to be run for at most $O(\log n/ \beta)$ iterations before all vertices are visited.
+    \item To label all components, decomposition algorithm is called recursively. $\beta$ is constant. 
+    \begin{itemize}
+        \item Each call contracts partitions into single vertex
+        \item Vertices and edges between partitions are relabeled
+    \end{itemize}
+\end{itemize}
+
+\textbf{Method: } Concurrent-read concurrent-write (CRCW) PRAM
+\begin{itemize}
+    \item Work: equal to number of operations required
+    \item Depth: number of time steps needed
+\end{itemize}
+
+\textbf{Decomposition: }
+\begin{itemize}
+    \item The $(\beta, d)$-decomposition algorithm by Miller et al. is a parallel decomposition based on parallel BFS. Resulting partitions $V$ have small diameter (any two vertices are at hop distance $\leq d$) and the number of edges with endpoints in different clusters is $\leq \beta m$ i.e. $\beta$ is how many edges we want to cut. 
+    \item Every vertex $v$ has shift value $\delta_v$ drawn from exponential distribution. This random value determines the start time of that vertex's BFS
+    \item $v$ is assigned parition $S_u$ that minimizes shifted distance dist($u,v$) - $\delta_u$
+    \begin{itemize}
+        \item Multiple BFS
+        \item At each iteration $t$ (starting with $t=0$) start BFS's in parallel from unvisited vertices $v$ such that $\delta_v \in [t, t+1]$.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Algorithm 1: CC using DECOMP: }
+i.e. connected components using decomposition
+
+\begin{itemize}
+    \item Input undirected graph $G = (V,E)$
+    \item Output labels of connected components
+    \begin{itemize}
+        \item Parameter $\beta$ controls how aggressively edges are cut
+        \item L = DECOMP($G(V,E)\beta$) to partition $V$ into hop-diameter partitions using random exponential shifts; each cluster gets labelled
+        \item Contract graph so that each cluster becomes a super-vertex in $V'$. If an edge in $G$ crossed clusters, then it becomes an edge in $E'$. 
+        \item If $E' == \emptyset$ then there are no edges in clusters and each cluster is fully connected
+        \item Run CC recursively on smaller graph $G'(V',E')$ and returns labels $L'$ for super-vertices. 
+        \item Each vertex in cluster C inherits cluster's super-label
+    \end{itemize}
+    \item Option of using arbitrary decomp which rounds down the $\delta_v$ values and makes arbitrary tiebreaking decisions
+    \item When BFS examines edge, check on-the-fly if intra-component or inter-component. Ignore intra-component, only carry inter-component forward
+\end{itemize}
+
+\textbf{Implementation: }
+\begin{itemize}
+    \item Three versions: Decomp-min, decomp-arb, decomp-arb-hybrid
+    \item 
+\end{itemize}
+
+\subsubsection{Results}
+
+\begin{itemize}
+    \item Over 40 cores, implementations are 18-39x faster over same implementation on single thread
+\end{itemize}
+
+\subsubsection{Novelty}
+
+% Add novelty notes here
+
+\subsubsection{Strengths/Weaknesses}
+
+% Add strengths and weaknesses here
+
+\subsubsection{Ideas for Improving Techniques/Evaluation}
+
+% Add improvement ideas here
+
+\subsubsection{Open Problems/Directions for Future Work}
+
+% Add open problems and future work here
+
+\newpage
+
+\subsection{Paper Review}
+\subsubsection{A Simple and Practical Linear-Work Parallel Algorithm for Connectivity}
+
+This paper describes the first parallel algorithm for identifying connected components in a graph that is work-efficient and can be reasonably implemented. It builds off literature that describes (a) parallel algorithms that are not theoretically work-efficient or (b) highly efficient theoretical algorithms that would be very challenging to practically implement. As such, the paper fits perfectly into the corpus of Algorithm Engineering, a positioning which is further reinforced by the blend of theory and experimental results presented in the work. 
+
+The idea underpinning the algorithm is quite elegant. It uses Miller et al.'s $(\beta, d)$-decomposition as a subroutine to partition the graph into small diameter clusters (any two vertices in the cluster are at most hop distance $d$ away from each other). The number of edges connecting clusters is less than $\beta m$. In other words, $\beta$, a fraction between 0 and 1, tells us what proportion of edges we are willing to cut in order to create distinct clusters. A graph so decomposed is then collapsed into a smaller graph $G'(V',E')$ where each $V'$ represents a cluster, and each $E'$ represents one of the at most $\beta m$ edges in between the clusters. The goal, to be accomplished through recursive applications of $(\beta, d)$-decomposition (DECOMP) to the graph, is to fully collapse the graph so that individual connected components are represented by only one super-vertex $V''$. The label $L''$ given to $V''$ is finally applied to all of the vertices that have been collapsed into that super-vertex.
+
+An important practicality consideration that the authors make is using arbitrary decomposition, which uses rounded $\delta_v$ instead of fractional tie-breaking. Although it has the same asymptotic guarantees as regular DECOMP, the expectation of cut edges doubles to $2\beta m$. Other optimizations include in-place/on-the-fly filtering of edges that will be carried forward during the BFS. Intra-component edges are no longer needed by the algorithm and therefore culled. Memory is also saved by using a single structure C for storing both the component ID and resolving conflicts. There is some inefficiency inherent in parallel BFS as multiple nodes might write to the same child node at the same time, leading to a conflict that is resolved at the next barrier. The barrier effectively maintains synchronicity and also allows intra-component edges to be dropped in the min-decomp version of the code. The arbitrary version of the decomposition algorithm avoids the synchronization barrier and only stores one integer per vertex (its component ID). 
+
+A last note on implementation is made with respect to hybrid BFS, which implements bottom-up search per Beamer et al. when the frontier is large. Although the connected cluster algorithm must inspect every edge in order to determine if it is inter- or intra-cluster, using cache-friendly read-based computation when the frontier is large does improve performance.
+
+The algorithms were tested on six graphs (random 5-degree graph, two power-law degree distribution graphs of differing densities, a 3D-grid graph structured like a lattice, a straight line, and a social network graph com-Orkut). The performance of the serial versions of these algorithms varies depending on the graph they are applied to. In general, arbitrary decomposition which requires only one pass over the edges of the frontier wins out over regular decomposition. When the frontier grows large the hybrid algorithm is beneficial, as expected. Parallelizing the algorithms achieved up to a 13x speedup, and is robust across graph types.
+
+One of the clear strengths of this paper is its novelty. It is the theoretical work-efficient algorithm with polylogarithmic-depth and an implementation of its kind. The paper also provides a simple, comprehensible version of the algorithm alongside some clever optimizations that improve its practical runtime. The results suggest, as might be expected, that this algorithm works much better on small-diameter graphs than on large-diameter graphs, and I wonder what its performance on more real datasets (e.g. Wikipedia, or the Flickr dataset we discussed last week) would be. Also, the choice of $\beta$ is and remains a little arbitrary.
+
+I think future work could lead in the direction of additional experiments with real-world graphs. A way that one might be able to build on this paper is finding some novel implementation (what real-world problems are there that would benefit from finding disconnected elements quickly? I imagine there are some interesting applications in finite element analysis, which suffers from numerical instability when there are disconnected mesh elements.)

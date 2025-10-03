@@ -163,10 +163,13 @@ function animate_bfs(g::AbstractGraph; s::Int=1, method::Symbol=:topdown, dt::Fl
             step!()
 
             if method == :topdown
+
+                if parallel; sleep(dt); end
                 
                 for v in frontier
 
-                    node_colors[][v] = :red; notify(node_colors); step!()
+                    node_colors[][v] = :red; notify(node_colors)
+                    if !parallel; step!(); end
                     ns = outnbrs(g, v)
                     neighbor_edges = [edge_is[(v, n)] for n in ns]
 
@@ -177,7 +180,7 @@ function animate_bfs(g::AbstractGraph; s::Int=1, method::Symbol=:topdown, dt::Fl
 
                     notify(edge_colors); notify(edge_widths)
 
-                    if parallel; sleep(dt); end # wait a second so that it's a little less speedy
+                    #if parallel; sleep(dt); end # wait a second so that it's a little less speedy
 
                     for (edge_i, n) in zip(neighbor_edges, ns)
 
@@ -222,7 +225,8 @@ function animate_bfs(g::AbstractGraph; s::Int=1, method::Symbol=:topdown, dt::Fl
 
                     end
 
-                    node_colors[][v] = current_node_colors[v]; notify(node_colors); step!()
+                    node_colors[][v] = current_node_colors[v]; notify(node_colors)
+                    if !parallel; step!(); end
          
                 end
  
@@ -247,7 +251,7 @@ function animate_bfs(g::AbstractGraph; s::Int=1, method::Symbol=:topdown, dt::Fl
                             edge_widths[][edge] = 2; notify(edge_widths)
                         end
 
-                        step!()
+                        if !parallel; step!(); end
 
                         found_parent = false
 
@@ -296,7 +300,7 @@ function animate_bfs(g::AbstractGraph; s::Int=1, method::Symbol=:topdown, dt::Fl
                             node_colors[][v] = :lightgray; notify(node_colors)
                         end
 
-                        step!()
+                        if !parallel; step!(); end
 
                     end
 

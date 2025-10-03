@@ -1,0 +1,13 @@
+\section{The Input/Output complexity of sorting and related problems}
+
+\textbf{Author(s):} Alok Aggarwal and Jeffrey Scott Vitter
+
+\subsection{Paper notes}
+
+The motivation for this paper is drawn from the real-world need for extremely fast sorting algorithms over extremely large datasets (on the order of tens of millions of records). 1/4 of all computer cycles are taken up by sorting, and most of those cycles are taken up by I/O between internal memory and secondary storage. 
+
+The problem can be solved by relaxng the program requirements and introducing parallel/distributed processing, or to improve our understanding of the actual, theoretical limits underpinning sorting. The authors take the latter approach and set up the problem with the following parameters: $N$ records $(R_1, R_2, ..., R_N)$ to sort, $M$ records that can fit into internal memory, $B$ records per block, and $P$ blocs that can be transferred simultaneously. With this setup, records can be transferred in parallel within each block, and blocks can also be transferred in parallel. 
+
+This setup is used in order to find theoretically optimal bounds for five problems: sorting, FFT, permutation networks, permuting, matrix transposition. 
+
+\textbf{Sorting: } internal memory is empty

@@ -1,0 +1,21 @@
+\section{Engineering a cache-oblivious sorting algorithm}
+
+\textbf{Author(s):} Gerth Stolting Brodal, Rolf Fagerberg, Kristoffer Vinther
+
+\subsection{General Notes}
+
+Many results have built on Friggo et al.
+\begin{itemize}
+    \item Often proven under the tall-cache assumption $M \geq B^2$
+    \item Many theoretical results but few empirical (those that do show that cache-oblivious algorithms > classic RAM and are competitive with cache-aware algorithms)
+    \item k-merger does not need a specific memory layout. Sizes of buffers not layout in memory are critical feature
+\end{itemize}
+
+This paper
+\begin{itemize}
+    \item Cache-oblivious sorting algorithm (faster than Quicksort for input sizes that fit into memory)
+\end{itemize}
+
+\subsection{Paper Review}
+
+This paper presents an implemented version of Frigo et al.'s cache-oblivious search. One of the first points that they address is the theoretical optimality of using a two-level I/O model for multilevel memory hierarchies. They argue that if I/O operations are made by optimal cache replacement strategies, then the analysis holds for all levels of multilevel memory, and the algorithm will be optimized to all levels of cache.

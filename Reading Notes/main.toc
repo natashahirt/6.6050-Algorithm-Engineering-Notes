@@ -1,0 +1,136 @@
+\contentsline {section}{\numberline {1}A Theoretician's Guide to the Experimental Analysis of Algorithms}{5}{section.1}%
+\contentsline {subsection}{\numberline {1.1}General Notes}{5}{subsection.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.1}Governing Principles}{5}{subsubsection.1.1.1}%
+\contentsline {subsubsection}{\numberline {1.1.2}Possible Questions}{5}{subsubsection.1.1.2}%
+\contentsline {subsubsection}{\numberline {1.1.3}Whom can you trust?}{6}{subsubsection.1.1.3}%
+\contentsline {subsection}{\numberline {1.2}Paper Review}{6}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Motivation}{6}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Key Ideas/Results}{6}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Pet Peeves}{7}{subsubsection.1.2.3}%
+\contentsline {subsubsection}{\numberline {1.2.4}Pitfalls}{8}{subsubsection.1.2.4}%
+\contentsline {subsubsection}{\numberline {1.2.5}Suggestions}{9}{subsubsection.1.2.5}%
+\contentsline {subsubsection}{\numberline {1.2.6}Novelty}{9}{subsubsection.1.2.6}%
+\contentsline {subsubsection}{\numberline {1.2.7}Strengths/Weaknesses}{9}{subsubsection.1.2.7}%
+\contentsline {subsubsection}{\numberline {1.2.8}Ideas for Improving Techniques/Evaluation}{9}{subsubsection.1.2.8}%
+\contentsline {subsubsection}{\numberline {1.2.9}Open Problems/Directions for Future Work}{9}{subsubsection.1.2.9}%
+\contentsline {section}{\numberline {2}Algorithm Engineering: An Attempt at Definition}{10}{section.2}%
+\contentsline {subsection}{\numberline {2.1}General Notes}{10}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Introduction}{10}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}History}{10}{subsubsection.2.1.2}%
+\contentsline {subsubsection}{\numberline {2.1.3}Models}{10}{subsubsection.2.1.3}%
+\contentsline {subsubsection}{\numberline {2.1.4}External Memory Model (I/O Model)}{10}{subsubsection.2.1.4}%
+\contentsline {subsubsection}{\numberline {2.1.5}Design}{11}{subsubsection.2.1.5}%
+\contentsline {subsubsection}{\numberline {2.1.6}MST Example}{11}{subsubsection.2.1.6}%
+\contentsline {subsubsection}{\numberline {2.1.7}Analysis}{11}{subsubsection.2.1.7}%
+\contentsline {subsubsection}{\numberline {2.1.8}Implementation}{11}{subsubsection.2.1.8}%
+\contentsline {subsubsection}{\numberline {2.1.9}Experiments}{11}{subsubsection.2.1.9}%
+\contentsline {subsubsection}{\numberline {2.1.10}Algorithm Libraries}{11}{subsubsection.2.1.10}%
+\contentsline {subsubsection}{\numberline {2.1.11}Instances}{12}{subsubsection.2.1.11}%
+\contentsline {subsection}{\numberline {2.2}Paper Review}{12}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Motivation}{12}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Key Ideas}{12}{subsubsection.2.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.3}Results}{12}{subsubsection.2.2.3}%
+\contentsline {subsubsection}{\numberline {2.2.4}Novelty}{12}{subsubsection.2.2.4}%
+\contentsline {subsubsection}{\numberline {2.2.5}Strengths/Weaknesses}{12}{subsubsection.2.2.5}%
+\contentsline {subsubsection}{\numberline {2.2.6}Ideas for Improving Techniques/Evaluation}{12}{subsubsection.2.2.6}%
+\contentsline {subsubsection}{\numberline {2.2.7}Open Problems/Directions for Future Work}{12}{subsubsection.2.2.7}%
+\contentsline {section}{\numberline {3}Parallel Algorithms}{13}{section.3}%
+\contentsline {subsection}{\numberline {3.1}General Notes}{13}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Modeling Parallel Computations}{13}{subsection.3.2}%
+\contentsline {subsubsection}{\numberline {3.2.1}Multiprocessor Models}{13}{subsubsection.3.2.1}%
+\contentsline {subsubsection}{\numberline {3.2.2}Network topology}{13}{subsubsection.3.2.2}%
+\contentsline {subsubsection}{\numberline {3.2.3}Primitive operations}{14}{subsubsection.3.2.3}%
+\contentsline {subsubsection}{\numberline {3.2.4}Work-Depth Models}{15}{subsubsection.3.2.4}%
+\contentsline {subsubsection}{\numberline {3.2.5}Costs}{15}{subsubsection.3.2.5}%
+\contentsline {subsubsection}{\numberline {3.2.6}Emulations}{15}{subsubsection.3.2.6}%
+\contentsline {subsection}{\numberline {3.3}Parallel algorithmic techniques}{15}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Divide-and-conquer}{15}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Randomization}{16}{subsubsection.3.3.2}%
+\contentsline {subsubsection}{\numberline {3.3.3}Parallel pointer manipulation}{16}{subsubsection.3.3.3}%
+\contentsline {subsection}{\numberline {3.4}Basic operations on sequences, lists, trees}{16}{subsection.3.4}%
+\contentsline {subsubsection}{\numberline {3.4.1}Pointer jumping}{16}{subsubsection.3.4.1}%
+\contentsline {subsubsection}{\numberline {3.4.2}List ranking}{17}{subsubsection.3.4.2}%
+\contentsline {subsubsection}{\numberline {3.4.3}Removing duplicates}{17}{subsubsection.3.4.3}%
+\contentsline {subsection}{\numberline {3.5}Graphs}{17}{subsection.3.5}%
+\contentsline {subsubsection}{\numberline {3.5.1}BFS}{17}{subsubsection.3.5.1}%
+\contentsline {subsubsection}{\numberline {3.5.2}Connected components}{18}{subsubsection.3.5.2}%
+\contentsline {subsubsection}{\numberline {3.5.3}Spanning trees and minimum spanning trees}{19}{subsubsection.3.5.3}%
+\contentsline {subsection}{\numberline {3.6}Sorting}{19}{subsection.3.6}%
+\contentsline {subsubsection}{\numberline {3.6.1}QuickSort}{19}{subsubsection.3.6.1}%
+\contentsline {subsubsection}{\numberline {3.6.2}Radix sort}{19}{subsubsection.3.6.2}%
+\contentsline {subsection}{\numberline {3.7}Computational geometry}{20}{subsection.3.7}%
+\contentsline {subsubsection}{\numberline {3.7.1}Closest pair}{20}{subsubsection.3.7.1}%
+\contentsline {subsubsection}{\numberline {3.7.2}Convex hull}{20}{subsubsection.3.7.2}%
+\contentsline {subsection}{\numberline {3.8}Numerical algorithms}{21}{subsection.3.8}%
+\contentsline {subsubsection}{\numberline {3.8.1}Matrix operations}{21}{subsubsection.3.8.1}%
+\contentsline {subsubsection}{\numberline {3.8.2}Fourier transform}{21}{subsubsection.3.8.2}%
+\contentsline {subsection}{\numberline {3.9}Research issues and summary}{21}{subsection.3.9}%
+\contentsline {subsection}{\numberline {3.10}Paper Review: Parallel Algorithms}{22}{subsection.3.10}%
+\contentsline {subsubsection}{\numberline {3.10.1}Motivation}{22}{subsubsection.3.10.1}%
+\contentsline {subsubsection}{\numberline {3.10.2}Key Ideas}{22}{subsubsection.3.10.2}%
+\contentsline {subsubsection}{\numberline {3.10.3}Results}{22}{subsubsection.3.10.3}%
+\contentsline {subsubsection}{\numberline {3.10.4}Novelty}{22}{subsubsection.3.10.4}%
+\contentsline {section}{\numberline {4}Thinking in Parallel}{23}{section.4}%
+\contentsline {subsection}{\numberline {4.1}General Notes}{23}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Paper Review}{23}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Motivation}{23}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Key Ideas}{23}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Results}{23}{subsubsection.4.2.3}%
+\contentsline {subsubsection}{\numberline {4.2.4}Novelty}{23}{subsubsection.4.2.4}%
+\contentsline {subsubsection}{\numberline {4.2.5}Strengths/Weaknesses}{23}{subsubsection.4.2.5}%
+\contentsline {subsubsection}{\numberline {4.2.6}Ideas for Improving Techniques/Evaluation}{23}{subsubsection.4.2.6}%
+\contentsline {subsubsection}{\numberline {4.2.7}Open Problems/Directions for Future Work}{23}{subsubsection.4.2.7}%
+\contentsline {section}{\numberline {5}Parallel Breadth-First Search on Distributed Memory Systems}{24}{section.5}%
+\contentsline {subsection}{\numberline {5.1}General Notes}{24}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Paper Review Notes}{25}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Motivation}{25}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Key Ideas}{25}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Results}{25}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Novelty}{26}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Strengths/Weaknesses}{26}{subsubsection.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.2.6}Ideas for Improving Techniques/Evaluation}{26}{subsubsection.5.2.6}%
+\contentsline {subsubsection}{\numberline {5.2.7}Open Problems/Directions for Future Work}{26}{subsubsection.5.2.7}%
+\contentsline {subsection}{\numberline {5.3}Paper Review}{27}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Parallel Breadth-First Search on Distributed Memory Systems}{27}{subsubsection.5.3.1}%
+\contentsline {section}{\numberline {6}A Simple and Practical Linear-Work Parallel Algorithm for Connectivity}{28}{section.6}%
+\contentsline {subsection}{\numberline {6.1}General Notes}{28}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Paper Review}{28}{subsection.6.2}%
+\contentsline {subsubsection}{\numberline {6.2.1}Motivation}{28}{subsubsection.6.2.1}%
+\contentsline {subsubsection}{\numberline {6.2.2}Key Ideas}{28}{subsubsection.6.2.2}%
+\contentsline {subsubsection}{\numberline {6.2.3}Results}{29}{subsubsection.6.2.3}%
+\contentsline {subsubsection}{\numberline {6.2.4}Novelty}{29}{subsubsection.6.2.4}%
+\contentsline {subsubsection}{\numberline {6.2.5}Strengths/Weaknesses}{29}{subsubsection.6.2.5}%
+\contentsline {subsubsection}{\numberline {6.2.6}Ideas for Improving Techniques/Evaluation}{29}{subsubsection.6.2.6}%
+\contentsline {subsubsection}{\numberline {6.2.7}Open Problems/Directions for Future Work}{29}{subsubsection.6.2.7}%
+\contentsline {subsection}{\numberline {6.3}Paper Review}{30}{subsection.6.3}%
+\contentsline {subsubsection}{\numberline {6.3.1}A Simple and Practical Linear-Work Parallel Algorithm for Connectivity}{30}{subsubsection.6.3.1}%
+\contentsline {section}{\numberline {7}Shared Memory Parallelism can be Fast and Scalable}{31}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Chapter 7: Ligra}{31}{subsection.7.1}%
+\contentsline {section}{\numberline {8}A functional approach to external graph algorithms}{33}{section.8}%
+\contentsline {subsection}{\numberline {8.1}General Notes}{33}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Paper Review}{33}{subsection.8.2}%
+\contentsline {subsubsection}{\numberline {8.2.1}Motivation}{33}{subsubsection.8.2.1}%
+\contentsline {subsubsection}{\numberline {8.2.2}Previous approaches}{33}{subsubsection.8.2.2}%
+\contentsline {subsubsection}{\numberline {8.2.3}Key Ideas}{34}{subsubsection.8.2.3}%
+\contentsline {subsubsection}{\numberline {8.2.4}Results}{35}{subsubsection.8.2.4}%
+\contentsline {subsubsection}{\numberline {8.2.5}Novelty}{35}{subsubsection.8.2.5}%
+\contentsline {subsubsection}{\numberline {8.2.6}Strengths/Weaknesses}{35}{subsubsection.8.2.6}%
+\contentsline {subsubsection}{\numberline {8.2.7}Ideas for Improving Techniques/Evaluation}{35}{subsubsection.8.2.7}%
+\contentsline {subsubsection}{\numberline {8.2.8}Open Problems/Directions for Future Work}{35}{subsubsection.8.2.8}%
+\contentsline {subsection}{\numberline {8.3}Paper Review}{36}{subsection.8.3}%
+\contentsline {subsubsection}{\numberline {8.3.1}A functional approach to external graph algorithms}{36}{subsubsection.8.3.1}%
+\contentsline {section}{\numberline {9}The Input/Output complexity of sorting and related problems}{37}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Paper notes}{37}{subsection.9.1}%
+\contentsline {section}{\numberline {10}Cache oblivious algorithms}{38}{section.10}%
+\contentsline {subsection}{\numberline {10.1}General Notes}{38}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Paper Review}{39}{subsection.10.2}%
+\contentsline {subsubsection}{\numberline {10.2.1}Cache oblivious algorithms}{39}{subsubsection.10.2.1}%
+\contentsline {section}{\numberline {11}Engineering a cache-oblivious sorting algorithm}{40}{section.11}%
+\contentsline {subsection}{\numberline {11.1}General Notes}{40}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Paper Review}{40}{subsection.11.2}%
+\contentsline {section}{\numberline {12}Engineering in-place shared-memory sorting algorithms}{41}{section.12}%
+\contentsline {subsection}{\numberline {12.1}General Notes}{41}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}Paper Review}{42}{subsection.12.2}%
+\contentsline {subsubsection}{\numberline {12.2.1}Engineering in-place shared-memory sorting algorithms}{42}{subsubsection.12.2.1}%
+\contentsline {section}{\numberline {13}Pregel: A system for large-scale graph processing}{44}{section.13}%
+\contentsline {section}{\numberline {14}GraphChi: Large-Scale Graph Computation on Just a PC}{46}{section.14}%

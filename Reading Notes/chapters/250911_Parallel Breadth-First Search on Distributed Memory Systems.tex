@@ -1,0 +1,128 @@
+\section{Parallel Breadth-First Search on Distributed Memory Systems}
+
+\textbf{Author(s):} Aydın Buluç Kamesh Madduri
+
+\subsection{General Notes}
+
+\begin{itemize}
+    \item asymptotic complexity of parallel "level synchronous" BFS (O(D) where D is diameter of graph) is the same as serial algorithm because PRAM does not account for synchronization costs
+    \item Key optimization directions:
+    \begin{itemize}
+        \item parallelize edge visit steps, make sure parallelization is load-balanced
+        \item mitigate synchronization costs due to atomic updates/barrier synchronization after each level
+        \item improve locality of memory references by modifying graph layout and/or BFS data structures
+    \end{itemize}
+    \item Multithreaded systems:
+    \begin{itemize}
+        \item Bader and Madduri: ensure graph traversal is load-balanced to run on thousands of hardware threads (MTA-2 system has no cache)
+        \item GPGPUs rely on large scale multithreading to hide memory latency. High memory bandwidth, outperform CPU on low-diameter high-vertex/edge families. 
+    \end{itemize}
+    \item Multicore CPU systems:
+    \begin{itemize}
+        \item Performance is dependent on graph size
+        \item From Agarwal et al. : atomic intrinsics are a problem. Partition vertices of the graph and their edges among multiple sockets. Local vertices are updated atomically, nonlocal vertices are held back to avoid coherence traffic.
+        \item Xia and Prasanna : low-overhead "adaptive barrier" adjusting number of threads participating in traversal based on estimated amount of work to be performed
+        \item Leiserson and Schardl : shared queue replaced with "bag" data structure
+    \end{itemize}
+    \item Distributed memory systems
+    \begin{itemize}
+        \item Use level-synchronous approach
+        \item 'visited' checks replaced by edge-aggregation-based strategies (processor cannot tell if nonlocal vertex has been visited or not. Accumulate all edges corresponding to nonlocal vertices and send to owner processor at end of local traversal.)
+        \item Scarpazza et al. : 2d graph partitioning scheme limits key collective communication phases to at most sqrt(p) processors. Assume regular degree distribution. Compute time increases up to 10x with increasing processor counts (sequential kernels, data structures not work-efficient)
+    \end{itemize}
+    \item External memory algorithms: random access is expensive. External memory algs use I/O-optimal strategies for sorting and scanning
+    \item Other parallel BFS: fastest known algorithm in PRAM complexity model repeatedly squares adjacency matrix of graph, requires O(n$^3$) processors
+    \item Other related work: graph partitioning intrinsic to memory graph algorithm design (bounds inter-processor communication traffic). Sparse graph can be viewed as sparse matrix, can use linear algebra methods. 
+\end{itemize}
+
+\subsection{Paper Review Notes}
+
+\subsubsection{Motivation}
+
+\begin{itemize}
+    \item efficient RAM algorithms don't necessarily translate to modern (parallel) architectures
+    \item current architectures -- prioritize efficient computation of regular computations with low memory footprints, penalize memory-intensive code with irregular memory accesses
+    \item BFS algorithm is irregular because graph structure changes
+    \item design and parallel performance of data-intensive graph algorithms is understudied
+\end{itemize}
+
+\subsubsection{Key Ideas}
+
+1D partitioning
+\begin{itemize}
+    \item Each processor $P$ owns $n/p$ vertices and their outgoing vertices
+    \item $\approx$ 1d partitioning of adjacency matrix
+    \item multiple threads can list the neighbours of the frontier vertices, so they have to send newly discovered vertices to the owner process (all-to-all communication step)
+    \item c.f. serial version that only needs local compute -- distributed requires message buffers of size O(m), and all-to-all communication needs to be done at each BFS level
+    \item Partitioning of frontier vectors follows the vertices
+\end{itemize}
+
+2D partitioning
+\begin{itemize}
+    \item each BFS iteration is computationally equivalent to sparse matrix-sparse vector multiplication
+    \item $A$: adjacency matrix (sparse boolean); $x_k$: k-th frontier (sparse boolean vector with integer variables)
+    \item Vertex ownership is more flexible than in 1d
+    \begin{itemize}
+        \item Distribute vector entries over only one processor direction (rows, cols), e.g. diagonals, or first processor in row
+        \item Let each processor have same number of vertices (2d vector distribution matches matrix distribution), and each processor row is responsible for $t = [n/p_r]$ elements. Last processor row gets remaining $n - [n/p_r](p_r-1)$ elements i.e. i'th row is responsible for vertices numbered $v_{ip_r+1}$ to $v_{ip_r}$.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Results}
+
+Method
+\begin{itemize}
+    \item graphs are sparse
+    \item average path length is small constant value compared to n vertices (upper bounded by log n)
+    \item Use CSR representation (all adjacencies of vertex sorted and stored in contiguous chunk of memory, contiguously to the next vertex). Too wasteful for storing sub-matrices after 2D partitioning, however, so use Doubly-Compressed Sparse Columns (DCSC) for hypersparse matrices after 2D partitioning that uses column pointers and column IDs to index an array of $m$ row ids. 
+\end{itemize}
+
+\subsubsection{Novelty}
+
+\begin{itemize}
+    \item Two approaches to distributed-memory BFS with skewed degree distribution:
+    \begin{enumerate}
+        \item one-dimensional distributed adjacency arrays for representing graph
+        \item sparse matrix representation and 2-d partitioning among processors
+    \end{enumerate}
+    \item 2d partitioning approach + intranode multithreading reduces communication overhead by 3.5x
+    \item single-node performance of approach >= single-node shared memory results
+    \item updating multicore systems with modest levels of thread-level parallelism:
+    \begin{enumerate}
+        \item thread local stacks store newly visited vertices and are merged to form next frontier (memory requirement bounded by O(n)); copying does not have a large overhead
+        \item cache coherence ensures that when distance value is written at given level the correct value propagates ("benign races" for insertions)
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{Strengths/Weaknesses}
+
+% Add strengths and weaknesses here
+
+\subsubsection{Ideas for Improving Techniques/Evaluation}
+
+% Add improvement ideas here
+
+\subsubsection{Open Problems/Directions for Future Work}
+
+% Add open problems and future work here
+
+\newpage
+
+\subsection{Paper Review}
+\subsubsection{Parallel Breadth-First Search on Distributed Memory Systems}
+
+This paper is generally motivated by the fact that parallel BFS and its implementations on modern computer architectures is understudied, particularly in applications that involve irregular graphs. RAM (random access machine) models for algorithm design neglect the computational overhead of synchronizing and passing data between multiple processors. 
+
+As BFS is a key fundamental algorithm for graph operations, particularly in parallel systems where the naturally serial DFS is not as eligible for parallelization, much work has been invested into improving the efficiency of BFS. There have been meaningful advances in designing BFS for specific hardware systems (e.g. the massively parallel MTA-2 system used by Bader and Madduri), as well as for distributed memory systems that require intelligent partitioning of the graph to avoid coherence traffic and duplicate work (Scarpazza et al.). The most effective of these methods, however, operate on graphs with constant degrees, which do not reflect the typical distribution of graphs found in the wild. Another outstanding challenge is all-to-all communication at each level in BFS in order to synchronize knowledge about newly found vertices amongst the processors, which is especially expensive on distributed systems.
+
+The novel contributions of this paper focus on improving distributed-memory BFS on graphs with irregular degree distributions, and are twofold. First, the authors present a one-dimensional distributed adjacency array for representing graphs. Second, they offer an alternative 2-dimensional partitioning that can be used amongst multiple processes.
+
+I thought the discussion about potential bottlenecks in section 4.2 was very interesting. I would have expected that the synchronization and copying of the new frontier stack $FS$ (i.e. merging thread-local stacks at every level) would have induced greater overhead than 3\% of execution time, and that cache coherence would have been a greater issue for updating the distance array. However, the barrier and memory fence ensure that the correct distance is written and propagated to all the cores, making these "benign races" on insertions (into per-thread new frontier stacks $NS_i$) indeed benign. In the 2D case, use of the sparse accumulator in forming $\bigcup A_{ij}(:,k)$ for all $k$ where $f_i(k)$ exists (i.e. unioning neighbour columns of A for the frontier to build the new frontier) is also fascinating, since I would not have anticipated a dense vector of values to perform better than a method that works better than the multiway merge, which, given the previous readings about parallel algorithms, seems like it would have been the preferable option (more memory efficient, sorted output).
+
+The following sections talk more about memory efficiency, particularly focusing on the distinction between local and network memory accesses. Since, in the distributed approach, the array size for distance array checks (which make up a large fraction of the runtime) are reduced by a factor of $p$ processors, multithreading has meaningful performance benefits. Similar tenets hold for the 2D case, but the working sets are larger ($p_c$ and $p_r$ are both smaller than the total $p$). 
+
+The experimental studies seem to align with the requests that Johnson makes in A Theoretician's Guide to the Experimental Analysis of Algorithms, 2001, in that the hardware and experimental conditions are clearly described and likely replicable. A comparison is made to previous implementations in order to situate the work in the literature, and are open about failures (inability to compile on Cray machines). They also reveal unexpected findings, for instance that on some architectures, the 1D algorithm perform 1.5-1.8x as fast as the 2D (Franklin), but that when scaling up, the 2D performs faster due to reduced time in communication (Hopper). 
+
+If we go up to section 2.2, the authors state that prior work has primarily optimized by ensuring the parallelization of edge visit steps is load balanced, synchronization costs are mitigated, and that locality of memory references is improved. Although the authors are implementing a novel approach, they do pay attention to load balancing (randomly relabeling vertices), reducing synchronization overhead (the "benign races" as a mechanism for merging local thread frontier stacks), and improving locality of memory references (CSR for 1D case, DCSC for sparse 2D matrices).
+
+It would be interesting to see what happens when higher-diameter graphs are run on this algorithm, and whether any of these methods can be further optimized to create hardware specific solutions.

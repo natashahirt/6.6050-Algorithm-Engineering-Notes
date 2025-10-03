@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{amsthm}
+
+% Define theorem environments
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+% Custom formatting for sections to look like chapters
+\titleformat{\section}[display]
+{\normalfont\huge\bfseries}{}{0pt}{\Huge}
+\titlespacing*{\section}{0pt}{50pt}{40pt}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\fancyhead[L]{\rightmark}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Hyperlink setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=red,
+}
+
+% Code listing setup
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny,
+    showstringspaces=false,
+    tabsize=2
+}
+
+\title{Algorithm Engineering Reading Notes}
+\author{6.6050 Algorithm Engineering}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% Include individual note files
+\include{chapters/250904_A Theoretician's Guide to the Experimental Analysis of Algorithms}
+\include{chapters/250904_Algorithm Engineering_An Attempt at Definition}
+\include{chapters/250909_Parallel Algorithms}
+\include{chapters/250909_Thinking in Parallel}
+\include{chapters/250911_Parallel Breadth-First Search on Distributed Memory Systems}
+\include{chapters/250916_A Simple and Practical Linear-Work Parallel Algorithm for Connectivity}
+\include{chapters/250916_Shared memory parallelism can be fast and scaleable}
+\include{chapters/250918_A functional approach to external graph algorithms}
+\include{chapters/250918_The InputOutput complexity of sorting and related problems}
+\include{chapters/250923_Cache oblivious algorithms}
+\include{chapters/250923_Engineering a cache oblivious sorting algorithm}
+\include{chapters/250925_Engineering in-place shared-memory sorting algorithms}
+\include{chapters/250929_Pregel_A system for large scale graph processing}
+\include{chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC}
+\end{document}

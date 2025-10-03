@@ -1,0 +1,137 @@
+\section{Algorithm Engineering: An Attempt at Definition}
+
+\textbf{Author:} Peter Sanders
+
+\subsection{General Notes}
+
+\subsubsection{Introduction}
+
+\begin{itemize}
+    \item Fast search (Google) makes large quantities of text searchable
+    \item Algorithms offer efficiency + performance guarantees
+    \item Gap between theory and practice:
+    \begin{itemize}
+        \item Traditional machine models for theorizing about algorithms don't match hardware parallelism, memory hierarchies etc.
+        \item Theoretically designed algorithms often not implementable
+    \end{itemize}
+    \item Algorithmic engineering process similar to scientific method:
+    \begin{itemize}
+        \item Falsifiable hypothesis that can be (in)validated by experiments
+        \item Reproducibility
+        \item Application-oriented design supplies realistic inputs, constraints, and design parameters
+    \end{itemize}
+    \item Distinct from application engineering (which sits at the intersection of algorithm engineering and software engineering/developing production quality code):
+    \begin{itemize}
+        \item Algorithm engineering emphasises fast dev, efficiency, instrumentation for experiments
+        \item Application engineering emphasises simplicity, thorough testing, maintainability, simplicity, tuning for particular inputs
+        \item Link is often created through algorithm libraries
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{History}
+
+\begin{itemize}
+    \item 1970s/80s: Algorithm theory become subdiscipline of CS devoted to "paper and pencil" work
+    \item 1986: "Algorithm engineering" is term but not discussed
+    \item 1997: "Workshop in Algorithm Engineering" developed
+\end{itemize}
+
+\subsubsection{Models}
+
+\subsubsection{External Memory Model (I/O Model)}
+
+\begin{itemize}
+    \item Two levels of memory (c.f. uniform memory): fast memory of limited size M and slow memory accessed in blocks of size B
+    \item Cost to doing internal work (cost ratio between disk memory and RAM is $\sim$ 1:200)
+\end{itemize}
+
+\subsubsection{Design}
+
+\begin{itemize}
+    \item Efficient algorithms must also consider constant factors
+    \begin{itemize}
+        \item e.g. Maximum Flow algorithms: asymptotically best algorithm performs much worse than theoretically inferior algorithms
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{MST Example}
+
+\begin{itemize}
+    \item Undirected connected graph G with n nodes and m edges (edges with nonnegative weights)
+    \item MST of G is subset of edges with minimum total weight that forms a spanning tree of G
+    \item Can be solved in O(sort(m)) expected I/O steps where sort(N) = O(N/B log$_{M/B}$ N/B) and denotes the number of I/O steps required for external sorting.
+    \item New algorithm -- semiexternal variant of Kruskal's algorithm:
+    \begin{itemize}
+        \item Semiexternal graph is allowed O(n) words of fast memory
+        \item Edge accepted into MST if connecting two components of forest defined by previously found MST edges (does not create a cycle). Uses union-find (disjoint set union, DSU) data structure to store connected components
+        \item m > what can fit into memory but n can. Edges are sorted externally and then streams them into RAM to apply Kruskal's procedure there. Using path compression, only log(n) bits are needed per node.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Analysis}
+
+\begin{itemize}
+    \item Difficult to analyze even some simple/proven algorithms
+    \item Simplex algorithm is exponential (theoretically) but in practice, and especially with the addition of random permutations, linear/polynomial
+\end{itemize}
+
+\subsubsection{Implementation}
+
+\begin{itemize}
+    \item Essentially describes several algorithms that were too complex/required too difficult data structures to implement efficiently until many years later
+\end{itemize}
+
+\subsubsection{Experiments}
+
+\begin{itemize}
+    \item Benchmarking the falsifiable hypothesis
+    \item Difficult to test experiments with external memory algorithms (large inputs, huge runtime)
+\end{itemize}
+
+\subsubsection{Algorithm Libraries}
+
+\begin{itemize}
+    \item Challenging to design since applications are "unknown" at implementation time
+    \item Interface needs to be distinct from implementation
+    \item Examples:
+    \begin{itemize}
+        \item LEDA (Library of Efficient Data Types and Algorithms) for C++
+        \item Boost: forum for library designers that ensures quality and maybe to become part of STL
+        \item CGAL (Computational Geometry Algorithms Library): sophisticated example of C++ template programming
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Instances}
+
+\begin{itemize}
+    \item Collections of realistic problem instances for benchmarking NP-hard problems e.g. traveling salesman, Steiner tree, satisfiability, graph partitioning
+    \item More difficult to obtain polynomial ones e.g. route planning, flows etc. (which usually use random inputs instead)
+\end{itemize}
+
+\subsection{Paper Review}
+
+\subsubsection{Motivation}
+
+"Algorithmic engineering" lacks a formal definition but has a clear use-case. Paper is attempt at defining the field.
+
+\subsubsection{Key Ideas}
+
+\begin{itemize}
+    \item Algorithm engineering is the experimental branch of algorithmic theory
+    \begin{itemize}
+        \item P. Italiano "Workshop in Algorithm Engineering" (1997) describes algorithm engineering as "concerned with the design, analysis, implementation, tuning, debugging, and experimental evaluation of computer programs for solving algorithmic problems... provides methodologies and tools for developing and engineering efficient algorithmic codes and aims at integrating and reinforcing traditional theoretical approaches for the design and analysis of algorithms and data structures"
+    \end{itemize}
+    \item We need new memory models to capture the internal work done by an algorithm
+\end{itemize}
+
+\subsubsection{Results}
+
+Uses Minimum Spanning Tree (MST) algorithm as an example.
+
+\subsubsection{Novelty}
+
+\subsubsection{Strengths/Weaknesses}
+
+\subsubsection{Ideas for Improving Techniques/Evaluation}
+
+\subsubsection{Open Problems/Directions for Future Work}

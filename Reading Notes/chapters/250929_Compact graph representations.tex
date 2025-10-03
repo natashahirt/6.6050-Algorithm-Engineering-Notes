@@ -1,0 +1,28 @@
+\section{An Experimental Analysis of a Compact Graph Representation}
+
+\textbf{Author(s):} Daniel K. Blandford, Guy E. Blelloch, Ian A. Kash
+
+\subsection{General Notes}
+\begin{itemize}
+    \item Storing large graphs for modern applications (social networks etc.)
+    \item Unlabeled graphs (ordering on vertices can be picked by representation; need to store vertex labels separately for labeled graphs)
+    \item Representation based on graph separators in previous work (most real world graphs have small separators)
+    \item This paper: how does it stack up in practice? + how to handle dynamic graphs? (edge insertions, deletions), complete set of experiments
+\end{itemize}
+
+Comparison for static graphs: adjacency array
+\begin{itemize}
+    \item Adjacency array stores array of pointers to neighbors
+    \item Concatenated into large array with each vertex pointing to beginning of own block
+    \item Factor of 2 less space than adjacency list
+    \item Use four codes for encoding differences: gamma codes, snip codes, nibble codes, byte codes
+\end{itemize}
+
+Comparison for dynamic representation: optimized implementation of adjacency lists
+\begin{itemize}
+    \item Optimized for space
+    \item Optimized for time
+    \item Performance is based on size of blocks used for storing the data and (for adjacency lists) ordering of vertices v.s. separator based which does not depend on insertion order
+\end{itemize}
+
+% Add your general notes here

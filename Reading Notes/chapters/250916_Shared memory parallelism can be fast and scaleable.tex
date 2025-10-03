@@ -1,0 +1,54 @@
+\section{Shared Memory Parallelism can be Fast and Scalable}
+Chapters 7-8
+
+\textbf{Author(s):} Julian Shun
+
+\subsection{Chapter 7: Ligra}
+A Lightweight Graph Processing Framework for Shared Memory
+
+Origins
+\begin{itemize}
+    \item Many packages developed for processing large graphs in parallel (including distributed)
+    \item Ligra is especially good at graph traversal
+    \item Based on hybrid BFS by Beamer et al. (2011, 2012); sparse representation of vertices when frontier is small and dense representation when large
+    \item Ligra gets close to same memory/time efficiency and is simpler than Beamer et al.
+\end{itemize}
+
+Ligra
+\begin{itemize}
+    \item Designed for shared-memory machines (comm. costs are cheaper than distributed memory). Less capacity but big enough for most relevant graphs (100 billion edges)
+    \item Atomic compare-and-swap instruction deals with race conditions
+    \item Two data types:
+    \begin{enumerate}
+        \item Graph $G = (V, E)$
+        \item Subsets of vertices v (vertexSubset)
+    \end{enumerate}
+    \item Two functions (that can also be used on subsets):
+    \begin{enumerate}
+        \item mapping over vertices (vertexMap)
+        \item mapping over edges (edgeMap)
+    \end{enumerate}
+    \item BFS made using increasing vertexSubsets that represent the frontier
+    \begin{itemize}
+        \item Allow edges to be processed in different orders depending on need
+        \item Edge traversal includes looping over each vertex' out-edges, or looping over destination vertices sequentially/in parallel and checking if in-edges are in frontier
+    \end{itemize}
+    \item Between-ness centrality (what is the "importance" of a vertex) is BFS that accumulates statistics along the way and needs both forward and backward traversal. Easy in Ligra because vertexSubsets are stored each iteration during forward traversal
+    \item In-edges and out-edges are stored as individual arrays. When flipping traversal direction, just switch the role of the arrays. When undirected or symmetric graph, just store one copy of the arrays. When weighted, array is interleaved edge target and weights for cache efficiency [N1, W1, N2, W2, ..., Nm, Wm]
+    \item EdgeMapSparse vs EdgeMapDense
+    \begin{itemize}
+        \item EdgeMapDense: (bottom-up) called when number of outgoing edges of vertexSubset $U \in V$ is greater than some threshold (default is $m/20$). Loops through all $v \in V$ in parallel and for each vertex applies $F(ngh, v)$ for each of $v$'s incoming neighbors ngh that are in $U$ until $C(u)$ returns false. Returns dense representation of vertexSubset. Good for large vertexSubsets. Since $F$ is applied serially, EdgeMapDense is not atopic w.r.t. the target vertex. Read-based. 
+        \item EdgeMapSparse: (top-down) loops through all vertices in $U$ in parallel, for given $u \in U$ applies $F(u, ngh)$ to all outgoing neighbors in $G$ in parallel. Returns sparsely represented vertex subset. Work is proportional to $|U| + \sum_{u \in U}(\text{out-degree}(u))$. Good for small vertexSubsets.
+    \end{itemize}
+\end{itemize}
+
+Applications of Ligra
+\begin{itemize}
+    \item BFS
+    \item Between-ness centrality
+    \begin{itemize}
+        \item Tells us relative importance of vertices in a graph (e.g. betweenness centrality index)
+        \item For graph $G = (V, E)$ and $s, t \in V$ let $\sigma_{st}(v)$ be n shortest paths from $s$ to $t$ that pass through $v$. Therefore $\delta_{st}(v) = \sigma_{st}(v)/\sigma_{st}$ is the pair-dependency on $v$.
+        \item 
+    \end{itemize}
+\end{itemize}

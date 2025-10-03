@@ -1,0 +1,518 @@
+\section{Parallel Algorithms}
+
+\textbf{Authors:} Guy E. Blelloch and Bruce M. Maggs
+
+\subsection{General Notes}
+
+\begin{itemize}
+    \item Parallelism in an algorithm $\neq$ ability of a computer to perform operations in parallel
+\end{itemize}
+
+\subsection{Modeling Parallel Computations}
+
+\begin{itemize}
+    \item Sequential algorithms formulated using RAM (random access machine) model i.e. one processor connected to a memory system
+    \begin{itemize}
+        \item Each basic CPU operation (arithmetic, logic, memory access) takes one time step
+    \end{itemize}
+    \item Parallel computers have more complex organization
+\end{itemize}
+
+\subsubsection{Multiprocessor Models}
+
+\begin{itemize}
+    \item Sequential RAM with more than one processor
+    \item Types: local memory machine models, modular memory machine models, parallel random-access machine (PRAM) models
+    \begin{itemize}
+        \item \textbf{LMM}: One interconnection network with many processors. Each processor has its own local memory. Local operations (e.g. local memory access) take unit time. Time taken to access another processor's memory is larger.
+        \item \textbf{MMM}: Interconnection network has many processors and many memories. Processors are linked to memory via interconnection network, and access it using memory requests through the network. Time for any processor to reach any given memory module is approximately uniform.
+        \item \textbf{PRAM}: One shared memory with many processors. A processor can access any ``word'' of memory in one step. Accesses from multiple processors can happen in parallel. ``Ideal'' case, not realistic.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Network topology}
+
+\begin{definition}
+Network: collection of switches connected by communication channels. Processor/memory module has 1+ communication ports connected to the switches.
+\end{definition}
+\begin{definition}
+Network topology: pattern of interconnection of switches.
+\end{definition}
+\begin{definition}
+2-dimensional mesh: network that can be laid out in a rectangular fashion. Each switch has label $(x, y)$ i.e. its coordinates within $X, Y$ bounds.
+\end{definition}
+
+Algorithms have been designed to work with specific types of memory. May not work well on other networks and more complex than those designed for abstract models e.g. PRAM.
+
+\begin{itemize}
+    \item Bus: simplest network topology
+    \begin{itemize}
+        \item Local and modular memory machine models
+        \item All processors/memory modules are connected to a single bus
+        \item At most one piece of data can be written to the bus per step (request from processor to read/write or response from processor/memory module that holds the value)
+        \item Pros: easy to build, all processors/memory modules can observe traffic on the bus so easy to develop protocols for local cacheing
+        \item Cons: processors have to take turns using the bus (especially a problem with many processors)
+    \end{itemize}
+    \item Mesh:
+    \begin{itemize}
+        \item Number of switches = $X \cdot Y$
+        \item Often in local memory machine models (each processor with its local memory is connected to each switch)
+        \item Remote memory accesses done by routing messages through the mesh
+        \item Can also have 3D meshes, torus meshes, hypercubes
+    \end{itemize}
+    \item Multistage network:
+    \begin{itemize}
+        \item Used to connect one set of input switches to another set of output switches through a sequence of stages of switches
+        \item Stages numbered 1-L (L = depth of network). Input switches are on stage 1, output on L. 
+        \item Often used in modular memory computers (processors attached to input, memory to output). Word of memory accessed by injecting memory access request message into network.
+        \item 2-stage network connecting 4 processors to 16 memory modules. Each swtich has two channels at bottom and four at the top. More memory than processors because processors can generate memory access requests faster than memory modules can service them
+    \end{itemize}
+    \item Fat-tree:
+    \begin{itemize}
+        \item Structured like a tree. Each edge can represent many communication channels/each node can represent many switches. 
+        \item Memory requests travel down the tree to least-common ancestor then go back up. 
+    \end{itemize}
+\end{itemize}
+
+Alternate modeling technique: latency and bandwidth
+\begin{itemize}
+    \item Latency: time taken for message to traverse the network (topology dependent)
+    \item Bandwidth: rate at which data can be injected into the network (topology dependent); minimum gap $g$ between successive injections of messages into the network. 
+    \item Models include Postal Model (model described by single parameter L), Bulk-Synchronous Parallel model (L and $g$), LogP model (L, $g$, and $o$ (overhead/wasted time on sending/receiving message))
+\end{itemize}
+
+\subsubsection{Primitive operations}
+
+What kinds of operations are the processors/network able to perform? 
+\begin{itemize}
+    \item Assume all porcessors are allowed to perform in same local instructions as single processor in RAM
+    \item Special instructions for non-local memory requests, sending messages to other processors, global operations e.g. synchronization, restrictions to avoid processors from interfering with each other (e.g. writing to same memory locaiton)
+    \item Nonlocal instruction types:
+    \begin{itemize}
+        \item Instructions performing concurrent accesses to same shared memory locaiton
+        \item Instructions for synchronization
+        \item Instructions performing global operations on data
+    \end{itemize}
+    \item What happens when processors try to read/write to same resource (processor, memroy module, memory location) at the same time? 
+    \begin{itemize}
+        \item Exclusive access to resource: forbid the action
+        \item Concurrent access to resource: unlimited access
+        \item Queued access: time for a step is proportional to the max number of accesses to a resource
+    \end{itemize}
+    \item Other primitives support synchronization, combining arithmetic operations with communication etc.
+\end{itemize}
+
+\subsubsection{Work-Depth Models}
+
+\begin{definition}
+Work depth model: the cost of an algorithm is determined by examining the total number of operations it performs (W), and the dependencies among those operations (D).
+\end{definition}
+\begin{definition}
+W work: Number of operations an algorithm performs
+D depth: longest chain of dependencies among operations
+P paralellism: W/D
+\end{definition}
+
+If the sequential cost of an algorithm is W, then the ideal parallel time with P processors is $\approx T_P \approx W/P + D$ where we can evenly spread work amongst processors but cannot go faster than the critical path. 
+
+\begin{itemize}
+    \item Pros: no machine-dependent details. Often lead to realistic implementation
+    \item Classes:
+    \begin{itemize}
+        \item Circuit models: most abstract. Nodes and directed arcs, where node is a basic operation. Number of incoming arcs = fan-in, outgoing arcs = fan-out. Input arcs provide input to the whole circuit. No directed cycle permitted. 
+        \item Vector machine models: algorithm is a sequence of steps which perform operations on a vector of input values, producing an output vector. 
+        \item Language-based models: work-depth cost is associated with each programming language construct (e.g. work of calling two functions in parallel == work of two calls)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Costs}
+
+Work $W$ = number of processes $\times$ time required for algorithm to complete execution
+Depth $D$ = total time required to execute the algorithm
+
+\subsubsection{Emulations}
+
+An algorithm designed for one parallel model can often be translated into algorithms that work for another (work-preserving, i.e. work performed by both algorithms is approximately the same)
+
+This section goes through a proof showing that a PRAM processor can be "emulated" by a more realistic multiprocessor processor with a butterfly network with only logarithmic slowdowns.
+
+\subsection{Parallel algorithmic techniques}
+
+\subsubsection{Divide-and-conquer}
+
+Split the problem into subproblems that are easier to solve than the original, solve the subproblem, and merge the solutions. Often inherently parallelizable as operations are typically independent.
+
+Mergesort
+\begin{itemize}
+    \item Sorts n keys by splitting keys into two sequences of n/2 keys, recursively sorting each sequence, merging two sorted sequences of n/2 keys into sorted sequence of n keys.
+    \item Each half can be sent to a parallel process
+\end{itemize}
+
+\subsubsection{Randomization}
+\begin{itemize}
+    \item Used in parallel algorithms to ensure that processors can make global decisions which very probably lead to good global decisions. E.g. selecting a representative sampling, breaking symmetry, load balancing (dividing data into evenly sized subsets)
+\end{itemize}
+
+\subsubsection{Parallel pointer manipulation}
+
+Many operations for lists, trees, graphs (e.g. traversing linked list, visiting tree nodes, DFS) are inherently sequential. Parallel alternatives include:
+
+\begin{itemize}
+    \item \textbf{Pointer jumping} for lists and trees. Each node in parallel replaces its pointer with that of its successor/parent. After (at most log n) steps every node points to the root of the tree
+    \item \textbf{Euler tour} computing subtrees, tree depths, or node levels that would originally require sequential traversal can be done all at the same time
+    \item \textbf{Graph contraction} a graph is reduced in size while maintaining some of its original structure. Problem is solved on contracted graph, then used for final solution. 
+    \item \textbf{Ear decomposition} Partition of graph edges into ordered collection of paths. First is a cycle, others are ears. Replaces depth first search.
+    \item Other: small grpah seperators, hashing for load balancing and mapping addresses to memory
+\end{itemize}
+
+\subsection{Basic operations on sequences, lists, trees}
+
+\begin{lstlisting}
+ALGORITHM: sum(A)
+if (A.size() = 1) return A[0]
+else return sum({A[2i] + A[2i + 1] : i \in [0...A.size()/2]})
+\end{lstlisting}
+
+This can also be used to calculate max etc. 
+
+\begin{lstlisting}
+ALGORITHM: scan(A)
+if (A.size() == 1) return [0]
+else 
+    S = scan({A[2i] + A[2i + 1] : i in [0..A.size()/2]})
+    R = {if (i mod 2 == 0) then S[i/2] else S[(i-1)/2] + A[i-1] : i in [0...A.size()]}
+\end{lstlisting}
+
+Element-wise adding even elements of A to the odd elements, recursively solving the problem on the resulting sequence. 
+
+Multiprefix generalizes the scan operation to multiple independent scans, where for [(1,5), (0,2), (0,3), (1,4), (0,1), (2,2)] each position receives the sum of all the elements that have the same key to yield [0, 0, 2, 5, 5, 0].
+
+Fetch and add is multiprefix but the order of input elements for the scan is not necessarily the same as the order in input sequence A.
+
+\subsubsection{Pointer jumping}
+
+Each node i replaces pointer P[i] with pointer of the node it points to, P[P[i]]. Can compute a pointer to the end of the list/root of tree for each node. 
+
+\begin{lstlisting}
+ALGORITHM point_to_root(P)
+for j from 1 to [log(P.size())]
+    P := {P[P[i]] : i \in [0...P.size()]}
+\end{lstlisting}
+
+\subsubsection{List ranking}
+
+Computing distance from each node to the end of a linked list. 
+
+\begin{lstlisting}
+ALGORITHM list_rank(P)
+V = {if P[i] = i then 0 else 1 : i \in [0...P.size()]}
+for j from 1 to [log(P.size())]
+    V := {V[i] + V[P[i]] : i \in [0...P.size()]}
+    P := {P[P[i]] : i \in [0...P.size()]}
+\end{lstlisting}
+
+Where V[i] is distance spanned by pointer P[i] w.r.t. original list. 
+    
+These are not work efficient since it takes O(n log n) work vs sequential algorithms that can do it in O(n). 
+
+\subsubsection{Removing duplicates}
+
+Input and output are both sequences. Order doesn't matter.
+
+1. Using an array of flags: initialize a second array that keeps track of the initial appearance of each value. Only add the ones that do not repeat more than once. Explodes for longer lists.
+
+2. Hashing: create a hash table containing a prime number of entries, where prime is 2x as big as the number of items. If multiple items are attempted to be written into the hash table, only one will succeed. May not work the first iteration because values are defeated by values that are different. Needs several iterations with different hash functions.
+
+\begin{lstlisting}
+ALGORITHM remove_duplicates(V)
+m := next_prime(2 * V.size())
+table := distribute(-1, m)
+i := 0 // different hash function used for each iteration
+result := {}
+while V.size() > 0
+    table := table <- {(hash(V[j], m, i), j) : j \in [0...V.size()]}
+    winners := {V[j] : j \in [0...V.size()] | table[hash(V[j], m, i)] = j}
+    result := result ++ winners
+    table := table <- {(hash(k, m, i), k) : k \in winners}
+    V := {k \in V | table[hash(k, m, i)] != k}
+    i := i + 1
+return result
+\end{lstlisting}
+
+\subsection{Graphs}
+
+Most graph problems do not parallelize well.
+
+\begin{definition}
+Sparse graph: $m$ (number of edges) $\ll n^2$ (number of nodes)
+\end{definition}
+\begin{definition}
+Diameter D(G): maximum, over all pairs of vertices (u,v), of the minimum number of edges that need to be traversed from u to v
+\end{definition}
+
+Edge lists, adjacency lists, adjacency matrices used to represent graphs. For parallel algorithms, linked lists are reprsented with arrays (e.g. edge-list = array of edges, adjacency-list = array of arrays).
+
+\subsubsection{BFS}
+
+Parallel similar to sequential version. Start with source vertex s, traverse each level of the graph to find vertices that have not yet been visited. Each level is visited in parallel and no queue is required. 
+
+Maintain a set of frontier vertices to keep track of current level and produce new frontier on next step. Collect all neighbours of current frontier vertices in parallel and remove any that have not been visited. Multiple vertices may have the same uncollected vertex, so we need to remove duplicates. 
+
+\begin{lstlisting}
+ALGORITHM: bfs(s, G)
+front := [s]
+tree := distribute(-1, G.size())
+tree[s] := s
+while (front.size() != 0)
+    E := flatten({{(u,v) : u \in G[v]} : v \in front})
+    E' := {(u,v) : E | tree[u] = -1}
+    tree := tree <- E'
+    front := {u : (u,v) \in E' | v = tree[u]}
+return tree
+\end{lstlisting}
+
+Where front is the frontier vertices, tree contains the current BFS tree. Iterations terminate when no more vertices in frontier. Each vertex and edges are only visited once, so O(m+n).
+
+Can generate trees that cannot be generated with sequential BFS.
+
+\subsubsection{Connected components}
+
+How to label connected components of an undirected graph, such that two vertices u, v have the same label if and only if there is a path between them. BFS and DFS are very inefficient.
+
+Graph contraction helps. Contract vertices of a subgraph into a single vertex.
+
+1. Random mate graph contraction
+\begin{itemize}
+    \item Form a set of star subgraphs (tree depth 1), contract the seperators. Merge child into parent
+    \item Randomly decide if vertex is parent or child. Neighboring parent vertex is identified and made the child's root. 
+    \item Repeat until all components have size 1
+\end{itemize}
+
+How many contraction steps we need depends on how many vertices are removed in each step. Only children will be removed (P(child) = 1/2), and only if there's a neighbouring parent (P(has neighbouring parent) >= 1/2). The probability that a vertex is removed is P = 1/2 * 1/2 = 1/4. 
+
+\begin{lstlisting}
+ALGORITHM cc_random_mate(labels, E)
+if E.size() == 0 return labels
+else
+    child := {rand_bit() : v \in [1...n]} // randomly become child/parent
+    hooks := {(u,v) \in E | labels[u] != labels[v]} // edges with different labels
+    labels := labels <- hooks // children adopt parent label through hooks
+    E' := {(labels[u],labels[v]) : (u,v) \in E | labels[u] != labels[v]} // create smaller graph
+    labels' := cc_random_mate(labels, E') // recursively solve on smaller graph
+    labels' := labels <- {(u,labels'[v]) : (u,v) \in hooks} // propagate labels back through hook
+return labels'
+\end{lstlisting}
+
+The re-expansion of the graph passes labels from each root of a contracted star to its children. The graph is contracted while going down recursion and re-expanded coming back up. Each child can have multiple hook edges but only one parent. For each hook edge, the parent's label is written into the star. 
+
+Coins are flipped on even already-contracted vertices.
+
+Possible improvements: don't use all the edges for hooking on each step, just use a sample. 
+
+2. Deterministic graph contraction
+Form a set of disjoint subgraphs (each is a tree). Use point-to-root algorithm to contract subgraphs to a single vertex. 
+
+\begin{lstlisting}
+ALGOIRTHM cc_tree_contract(labels, E)
+if (E.size() == 0) return labels
+else
+    hooks := {(u,v) \in E | u > v}
+    labels := labels <- hooks
+    labels := point_to_root(labels)
+    E' := {(labels[u], labels[v]) : (u,v) \in E | labels[u] != labels[v]}
+    return cc_tree_contract(labels, E')
+\end{lstlisting}
+
+Instead of parent/child, the hooks are selected by using pointer jumping. Point goes from larger numbered vertices to smaller numbered vertices. Worst case behaviour occurs when the maximum index is at the center of a star and all of its children are smaller than it is. 
+
+Possible improvements: interleave hooking steps with pointer-jumping steps. Tree is only partially contracted when executing each hooking step. 
+
+\subsubsection{Spanning trees and minimum spanning trees}
+
+\begin{definition}
+Spanning tree of connected graph G = (V,E) is connected graph T = (V,E') s.t. E' is a subset of E, and E'.size() = V.size() - 1. Cannot have any cycles and forms a tree.
+\end{definition}
+
+When components are hooked together algorithm can keep track of which edges were used. Collection of all edges used in hooking (since only used once) will form a spanning tree.
+
+For minimum spanning tree, random mate algorithm makes sure that it selects the minimum-weight edge. If it doesn't lead to a parent, the child does not connect and is orphaned.
+
+\subsection{Sorting}
+
+Focusing on two algorithsm: QuickSort and radix sort. 
+
+\subsubsection{QuickSort}
+
+\begin{lstlisting}
+ALGORITHM: quicksort(A)
+if A.size() == 1 then return A
+i := rand_int(A.size())
+p := A[i]
+in parallel do
+    L := quicksort({a : a \in A | a < p}) \\ less than
+    E := {a : a \in A | a == p} \\ equal to
+    G := quicksort({a : a \in A | a > p}) \\ greater than
+return L ++ E ++ G
+\end{lstlisting}
+
+Can be further parallelized by selecting more than one partition element. With P processors, choosing P-1 partition elements divides keys into P sets, each of which can be sorted. Make sure to assign same number of keys per processor. 
+
+\subsubsection{Radix sort}
+
+Not a comparison sort (does not compare keys directly to find relative ordering); instead, reprsents keys as b-bit integers.
+
+Examines keys to be sorted one digit position at a time, starting with the least significant digit in each key. The output ordering of this sorrt must preserve the input order of any two keys with identical digit values in the position being examined. 
+
+Counting sort finds the rank of each key (position in the output order) then permutes the keys.
+
+\begin{lstlisting}
+ALGORITHM radix_sort(A,b)
+for i from 0 to b-1
+    flags := {(a >> i) mod 2 : a \in A}
+    notflags := {1-b : b \in flags}
+    R0 := scan(notflags)
+    s0 := sum(notflags)
+    R1 := scan(flags)
+    R := {if flags[j] == 0 then R0[j] else R1[j] + s0 : j \in [0...A.size()]}
+    A := A <- {(R[j],A[j]) : j \in [0...A.size()]}
+return A
+\end{lstlisting}
+
+Can also handle floating point numbers.
+
+\subsection{Computational geometry}
+
+Calculating properties of sets of objects in k-dimensional space (e.g. closest-pair of points, convex-hull, line/polygon intersections).
+
+Parallel solutions often use divide-and-conquer or plane sweeping. 
+
+\subsubsection{Closest pair}
+
+Set of points in k dimensions, returns two points that are closest to each other (Euclidean). Uses divide and conquer to split points along lines parallel to the y-axis.
+
+\begin{lstlisting}
+ALGORITHM closest_pair(P)
+if (P.size() < 2) return (P, inf)
+x_m := median({x : (x,y) \in P})
+L := {(x,y) \in P | x < x_m}
+R := {(x,y) \in P | x > x_m}
+in parallel do
+    (L',delta_l) := closest_pair(L)
+    (R',delta_r) := closest_pair(R)
+P' := merge_by_y(L',R')
+delta_p := boundary_merge(P',delta_l,delta_r,x_m)
+return (P',delta_p)
+\end{lstlisting}
+
+where merge\_by\_y merges L' and R' along y axis, and boundary\_merge does the following. Inputs are original points P sorted along y, closest distance within L and R, and median point x\_m. CLosest distance in P must be eitehr delta\_l, delta\_r, or a distance between a point in L and R. The two points must lie within delta = min(delta\_l, delta\_r) of x = x\_m, which defines a region in which the points must lie. 
+
+\begin{lstlisting}
+ALGORITHM boundary_merge(P, delta_l, delta_r, x_m)
+delta := min(delta_l, delta_r)
+M := {(x,y) \in P | (x >= x_m - delta) and (x <= x_m + delta)}
+delta_m := min({min({distance(M[i], M[i+j]) : j \in [1...7]}) : i \in [0...P.size()-7]})
+\end{lstlisting}
+
+\subsubsection{Convex hull}
+
+1. Quickhull
+Quickhull does something similar to QuickSort in that it picks a "pivot" element, splits the data around the pivot, and recurses on each split set. Pivot element not guaranteed to split the data into equal sized sets, but is often quite effective. 
+
+Take points p in plane and p1, p2 that are known to lie on convex hull (e.g. x, y extrema) and return all points that lie clockwise from p1 to p2. Algorithm removes points that cannot be on hull because they are right of teh line from p1 to p2. 
+
+\begin{lstlisting}
+ALGORITHM subhull(P, p1, p1)
+P' := {p \in P | left_of?(p,(p1,p2))}
+if (P'.size() < 2) return [p1] ++ P'
+else
+    i = max_index({distance(p,(p1,p2)) : p \in P'})
+    p_m := P'[i]
+    in parallel do
+        Hl := subhull(P', p1, pm)
+        Hr := subhull(P', p, p2)
+    return Hl ++ Hr
+\end{lstlisting}
+
+2. Mergehull
+
+Assumes P is presorted according to x coordinates of points. Hl must be a convex hull on the left and Hr must be a convex hull on the right. 
+
+\begin{lstlisting}
+ALGORITHM mergehull(P)
+if P.size() < 3 return P
+else 
+    in parallel do
+        Hl = mergehull(P[0...P.size()/2])
+        Hr = mergehull(P[P.size()/2...P.size()])
+    return join_hulls(Hl, Hr)
+\end{lstlisting}
+
+Can be improved by modifying the searhc for bridge points so they run in constant depth with linear work. Alternatively, use divide and conquer to separate point set into sqrt(n) regions, solving convex hull on each region recursively, then merging all pairs of those regions using binary search.
+
+\subsection{Numerical algorithms}
+
+\subsubsection{Matrix operations}
+
+Matrix multiplication e.g. is highly parallelizable because each loop can be done simultaneously. 
+
+\begin{lstlisting}
+ALGORITHM matrix_multiply(A,B)
+(l,m) := dimensions(A)
+(m,n) := dimensions(B)
+in parallel for i \in [0...l] do
+    in parallel for j \in [0...n] do
+        R_ij := sum({A_ik * B_kj : k \in [0...m]})
+\end{lstlisting}
+
+Arguably too parallel -- a lot of research focuses on what subset of parallelization is actually needed.
+
+Matrix inversion is more difficult to parallelize, but can be done. 
+
+\subsubsection{Fourier transform}
+
+Discrete Fourier Transform often solved using the Fast Fourier Transform algorithm, which is similarly easy to parallelize because of its loops. So, most work has gone into reducing the communication costs (butterfly network topology is called FFT network since the FFT has the same communication pattern as the network.)
+
+\begin{lstlisting}
+ALGORITHM fft(A)
+n := A.size()
+if n == 1 return A
+else
+    in parallel do
+        even := fft({A[2i] : i \in [0...n/2]})
+        odd := fft({A[2i + 1] : i \in [0...n/2]})
+    return {even[j] + odd[j]e^(2pi * i * j / n) : j \in [0...n/2]} ++ {even[j] - odd[j]e^(2pi * i * j / n) : j \in [0...n/2]} 
+\end{lstlisting}
+
+\subsection{Research issues and summary}
+
+Research recently on pattern matching, data structures, sorting, computational geometry, combinatorial optimization, linear algebra, linear and integer programming. 
+
+\newpage
+
+\subsection{Paper Review: Parallel Algorithms}
+
+\subsubsection{Motivation}
+
+Introduction to the design and analysis of parallel algorithms: algorithms that specify multiple operations on each step.
+
+\subsubsection{Key Ideas}
+
+There are several ways of modeling parallel algorithms. These models are necessary because, in the context of having multiple processors and memory modules, the assumption made in sequential models such as random-access machines (RAM) that basic CPU operations (arithmetic, logic, memory access etc.) only require one time step is no longer valid. 
+
+The first kind of model is called a multiprocessor model. This is closely related to the underlying hardware of a parallel processor, and takes into consideration the connectivity between processors and memory modules (e.g. is there an interconnection network? If so, what is its topology? Do processors have local memory modules or are they connected to memory through the network?) With the exception of parallel random-access machines (PRAM), a somewhat hypothetical form of parallel processor that assumes one shared memory that each processor can access in one time step, the organization of processors, memory modules, and network determine the cost of each CPU operation.
+
+The second way of modeling parallel algorithms is called work-depth. This is more abstract, and studies an algorithm's potential to be parallelized. Under the work-depth model, $W$ work is considered to be the total cost of the operations an algorithm performs. The maximum length of dependencies between these operations is called the depth $D$. The ideal parallel time that can be achieved with $P$ processors for a given algorithm is therefeore $T_P \approx W/P + D$ where work is evenly spread out amongst the available processors, but cannot go faster than longest path of interdependent operations.
+
+An algorithm that is designed for ideal conditions using work-depth model can be translated into a more hardware-conscious multiprocessor model in a way that preserves work and does not incur substantial additional slowdowns. 
+
+\subsubsection{Results}
+
+The article describes several algorithms that are common in sequential form in parallel form. Oftentimes, parallelization is used when there are many simple and/or independent operations that can be performed at the same time (e.g. moving pointers in a linked list, or summing adjacent values in a list). 
+
+More complex are graph problems. Traditional BFS and DFS can be converted into parallel form but are not necessarily more efficient. Consequently, a variety of techniques such as graph contraction have been developed. The chapter focuses on two such algorithms, a random-mate and deterministic graph contraction. It then expounds on some of the applications of these algorithms to related problems such as finding the minimum spanning tree. 
+
+The author also discusses computational geometry and numerical problems. I'm more familiar with these kinds of algorithms so seeing the parallel versions was both interesting and seemed intuitive. I found it interesting that most of the work in the matrix operations world is focused not on finding clever ways of parallelizing, since those algorithms naturally lend themselves to parallel implementaitons, but on optimizing the communication costs i.e. figuring out when it's actually smarter not to parallelize. The little snippet linking the butterfly network architecture in hardware to the fast fourier transform was also quite beautiful. 
+
+\subsubsection{Novelty}
+
+I don't know if anything here was particularly novel but it was certainly educational, and since many of these concepts are novel to me, arguably a success.

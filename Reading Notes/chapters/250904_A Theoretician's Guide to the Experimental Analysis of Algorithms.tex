@@ -1,0 +1,162 @@
+\section{A Theoretician's Guide to the Experimental Analysis of Algorithms}
+
+\textbf{Author:} David S. Johnson (2001)
+
+\subsection{General Notes}
+
+\subsubsection{Governing Principles}
+
+\begin{enumerate}
+    \item \textbf{Perform newsworthy experiments}: Problems should have direct applications. Where do you get your test set from if it has no application? Also, algorithms should be somewhat competitive with the ones that are used in practice. Have it be relevant, general, and credible.
+    
+    \item \textbf{Tie paper to the literature}: What actually are the interesting questions? What behaviour needs explaining, and what algorithms seem open to improvement? Try use implementations from previous papers.
+    
+    \item \textbf{Use instance testbeds that can support general conclusions}: You have the choice between (a) instances from real-world/pseudo-real-world applications and (b) randomly generated instances (ideally to be structured like real-world instances). Random instance generators should be able to generate instances of arbitrarily large size.
+    
+    \item \textbf{Use efficient and effective experimental designs}: e.g. variance reduction techniques (use the same set of randomly generated instances for all the algorithms you're testing), bootstrapping to evaluate multiple-run heuristics, use self-documenting programs (save data in descriptively named files)
+    
+    \item \textbf{Use reasonably efficient implementations}: Efficiency comes at a cost in effort. Don't cut corners that would prevent you from making a fair comparison but also don't overdo it.
+    
+    \item \textbf{Ensure reproducibility}: If you run the same code on the same instances of machine/compiler/OS/system load combination you should get the same runtime, operation count, solution quality. More broadly, if someone uses the same method will they be able to draw the same conclusions.
+    
+    \item \textbf{Ensure compatibility}: Write your papers so that future researchers can compare their algorithms/instances to your results
+    
+    \item \textbf{Report the full story}: Don't be overly selective with how you present your data. Maybe include tables in the appendix, but definitely include them.
+    
+    \item \textbf{Draw well-justified conclusions and look for explanations}: What did you learn from your experiments?
+    
+    \item \textbf{Present your data in informative ways}: Use good display techniques!
+\end{enumerate}
+
+\subsubsection{Possible Questions}
+
+\begin{enumerate}
+    \item How do implementation details, parameter settings, heuristics, data structure choices affect runtime of algorithm?
+    \item How does runtime of algorithm scale with instance size? How does this depend on instance structure?
+    \item What algorithmic operation counts best to help explain runtime?
+    \item What in practice are the computational bottlenecks? How do they depend on instance size and structure? How does this differ from predictions of worst-case analysis?
+    \item How is runtime (and runtime growth rate) affected by machine architecture? Can detailed profiling help explain it?
+    \item Given that one is running on the same/similar instances and on a fixed machine, how predictable are runtimes?
+    \item How does runtime compare to top competitors? How are comparisons affected by instance size/structure/machine architecture? Can differences be explained in terms of operation counts?
+    \item What are the answers to the above questions when "runtime" is replaced by "memory usage"/usage of some other computational resource?
+    \item What are answers to 1, 2, 6, 7 when one deals with approximation algorithms and "runtime" is replaced with "solution quality"?
+    \item Given a new class of instances you've identified, does it cause significant changes in the behaviour of previously studied algorithms?
+\end{enumerate}
+
+\subsubsection{Whom can you trust?}
+
+\begin{itemize}
+    \item Never trust a random number generator
+    \item Never trust your code to be correct
+    \item Never trust a previous author to have known all the literature 
+    \item Never trust your memory as to where you put that data (and how it was generated)
+    \item Never trust your computer to remain unchanged
+    \item Never trust backup media or websites to remain readable indefinitely
+    \item Never trust a so-called expert on experimental analysis
+\end{itemize}
+
+\subsection{Paper Review}
+
+\subsubsection{Motivation}
+
+Describes issues that arise when algorithms are analyzed experimentally (challenges with rigorous analysis led to the emphasis on theoretical worst-/average-case analysis w.r.t. asymptotic behavior in the first place)
+
+\subsubsection{Key Ideas/Results}
+
+\begin{itemize}
+    \item Key metrics are resource usage (time/memory) and quality of output solution
+    \item Reasons for implementing an algorithm:
+    \begin{itemize}
+        \item \textbf{Application paper}: Using code in a particular application, often to prove mathematical conjectures. Here, result is more important than efficiency
+        \item \textbf{Horse-race paper}: Evidence of superiority of algorithmic ideas
+        \item \textbf{Experimental analysis paper}: Understand strengths, weaknesses, operation of interesting algorithmic ideas in practice
+        \item \textbf{Experimental average-case paper}: Understand average-case behaviour of algorithms where direct probabilistic analysis is too hard
+    \end{itemize}
+    \item Rules for governing the writing of experimental papers:
+    \begin{itemize}
+        \item Perform newsworthy experiments
+        \item Tie paper to literature
+        \item Use instance testbeds that can support general conclusions
+        \item Use efficient and effective experimental designs
+        \item Use reasonably efficient implementations
+        \item Ensure reproducibility
+        \item Ensure comparability
+        \item Report the full story
+        \item Draw well-justified conclusions and look for explanations
+        \item Present your data in informative ways
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Pet Peeves}
+
+\begin{itemize}
+    \item Authors/referees who don't do their homework (make sure your algorithm isn't dominated)
+    \item Focusing on unstructured random instances that don't reflect real data OR on exclusively real data that may be outdated
+    \item In the millisecond testbed, runtime is somewhat irrelevant
+    \item When evaluating approximation algorithms, don't limit yourself to algorithms where the solution/optimal value is known (in this case, using an optimization algorithm is reasonable, so why use approximation)
+    \item Claiming "inadequate programming time/ability" as an excuse
+    \item Supplying code that doesn't match a paper's description of it
+    \item Irreproducible standards of comparison (e.g. only reporting the solution value, only reporting the percentage excess over the best solution currently known, reporting percentage excess over an estimate of expected optimal for randomly generated instances, reporting percentage excess over a well-defined lower bound, reporting percentage excess/improvement over some other heuristic)
+    \item Using runtime as a stopping criterion (it's not a cake that you're baking)
+    \item Using optimal solution value as a stopping criterion for algorithms that have no way of verifying optimality
+    \item Hand-tuned algorithm parameters
+    \item One-run study (unless study covers a wide range of instances)
+    \item Using the best result found as an evaluation criterion (is often from the tail of the distribution)
+    \item Uncalibrated machine (include processor speed, operating system, language/compiler)
+    \item The lost testbed (make sure future researchers have access to your tests)
+    \item False precision (more digits of accuracy than justified by the data)
+    \item Unremarked anomalies
+    \item Ex post facto stopping criterion (total running time is not reported, just the time taken to find the answer)
+    \item Failure to report overall runtimes (even if your main focus is not runtime)
+    \item Data without interpretation (at least be able to summarize patterns in the data)
+    \item Conclusions without support
+    \item Myopic approaches to asymptopia (medium/large instance behaviour doesn't necessarily translate to VERY large instance behaviour)
+    \item Tables without pictures
+    \item Pictures without tables
+    \item Pictures with too little insight
+    \item Inadequately/confusingly labeled pictures
+    \item Pictures with too much information (best when clear and uncluttered)
+    \item Confusing pictorial metaphors
+    \item Spurious trend lines (drawing lines between each point)
+    \item Poorly structured tables (order rows and columns so that they highlight important information)
+    \item Undefined metric (cryptic labels)
+    \item Comparing apples to oranges (algorithms tested on different instances, or on different machines)
+    \item Detailed stats on unimportant questions
+    \item Comparing approximation algorithms as to how often they find optima (restricts attention to test instances for which optimal solutions are known, ignores question of how near to optimal algorithm gets when it does not find the optimum)
+    \item Too much data! Replace raw data with averages and other summary stats
+\end{itemize}
+
+\subsubsection{Pitfalls}
+
+\begin{itemize}
+    \item Dealing with dominated (always slower than status quo) algorithms
+    \item Devoting too much computation to the wrong questions (overstudying results, running full experimental suites before algorithm is efficient or you've decided what data to collect)
+    \item Getting into an endless loop in the experimentation (draw the line on future research)
+    \item Using randomly generated instances to evaluate behaviour of algorithm ends up exploring properties of randomly generated instances
+    \item Too much code tuning (don't overthink, concentrate programming effort where it will be the most useful)
+    \item Lost code/data (don't modify code without saving version of original, don't forget to keep backup copies, organize your directories)
+\end{itemize}
+
+\subsubsection{Suggestions}
+
+\begin{itemize}
+    \item Think before you compute. Have you implemented it correctly? What do you want to study? What are your experiments addressing?
+    \item Use exploratory experimentation to find good questions
+    \item Use benchmark codes to calibrate machine speeds (some portable source code that other researchers can use to calibrate in the future)
+    \item Use profiling to understand runtimes (number of calls to various subroutines, time spent in subroutines etc. can point out higher-exponent components of runtime earlier). Also offers a mode of explaining the results.
+    \item Display normalized runtimes
+\end{itemize}
+
+\subsubsection{Novelty}
+
+Very experienced researcher discussing the state of the art of paper writing in this (somewhat niche?) field.
+
+\subsubsection{Strengths/Weaknesses}
+
+Personal/objective opinion. Otherwise very thorough and goes through a whole series of do's/don'ts that are akin to the advice a PI might give when instructing students on how to write a paper in that field.
+
+\subsubsection{Ideas for Improving Techniques/Evaluation}
+
+\subsubsection{Open Problems/Directions for Future Work}
+
+Would be nice to have some sense of the appropriate structure.
