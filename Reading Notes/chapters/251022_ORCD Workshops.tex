@@ -1,0 +1,163 @@
+\section{ORCD Workshop}
+
+\subsection{Parallel Programming}
+
+\textbf{Compiler level optimizations}
+gcc -O3 enables all optimizations that don't involve a space-speed tradeoff:\\
+\texttt{gcc -O3 my_code.c -o my_program}
+icc -fast enables aggressive optimizations including:
+\begin{itemize}
+\item -O3 (full optimization)
+\item -ipo (interprocedural optimization) 
+\item -no-prec-div (fast floating point division)
+\item -static (static linking)
+\item -xHost (optimizes for current architecture)
+\end{itemize}
+\texttt{icc -fast my_code.c -o my_program}
+
+\textbf{Avoid unnecessary work}
+\begin{itemize}
+    \item Put loops inside functions instead of functions inside loops (avoids function call overhead)
+    \item Avoid unnecessary logical tests using short-circuit operators
+    \item Move known cases outside of loops
+    \item Different operators have different speeds:
+    \begin{itemize}
+        \item Add: 3-6 cycles
+        \item Multiply: 4-8 cycles
+        \item Divide: 32-45 cycles (e.g. replace $\frac{n}{4}$ with $n \times 1/4$)
+        \item Power, etc.: terrible (e.g. replace $n^2$ with $n \times n$)
+        \item Log, etc.: also terrible (e.g. replace $\log(x_i) \times \log(y_i)$ with $\log(x_i + y_i)$)
+    \end{itemize}
+    \item Preallocate arrays (allocated in contiguous memory space)
+    \item Loop order: access row or column first? In row-major languages (C, numpy) call the row in the outer loop and the column in the inner loop
+\end{itemize}
+
+\textbf{Embarrassingly parallel}
+\begin{itemize}
+    \item Embarrassingly parallel, perfectly parallel, delightfully parallel, pleasingly parallel
+    \item These terms are synonymous and refer to problems that can be divided into completely independent tasks with no dependencies or communication needed between them. The term "embarrassingly parallel" is most common, though some prefer "pleasingly parallel" as it emphasizes the positive aspect of how well-suited these problems are for parallel computing
+    \item Run same program with different input parameters independently, and no communications
+    \item Use the \texttt{slurm} job array
+\end{itemize}
+
+\textbf{Parallel programming}
+Speedup of a parallel program: $S(p) = \frac{T(1)}{T(p)} = \frac{1}{\alpha + 1/p (1-\alpha)}$
+Where $p$ is the number of processors/cores, and $\alpha$ is the fraction of a program that is serial (span)
+
+\textbf{Distributed and shared memory systems}
+Shared memory
+\begin{itemize}
+    \item Cache-coherent interconnect
+    \item Multiple cores on a single node
+    \item Multi-processing (OpenMP, numpy)
+\end{itemize}
+
+Distributed memory
+\begin{itemize}
+    \item Non-cache-coherent interconnect
+    \item Each node has its own memory
+    \item Multiple nodes on a cluster
+    \item Message passing interface (MPI)
+\end{itemize}
+
+Hybrid parallel: OpenMP + MPI
+
+\textbf{Parallel programming languages}
+\begin{itemize}
+    \item C, Fortran: compiling languages for performance, widely used in scientific computing. Parallel library/protocol/platform: OpenMP, MPI, CUDA
+    \item C++: popular, but not suitable for parallel programming
+    \item Python: calls precompiled C libraries for performance e.g. numpy, Multiprocessing, MPI4py, CuPy
+    \item Julia: compiled for performance, multi-threading and distributed computing
+    \item MATLAB: convenient to deal with matrices, parallel toolbox and parallel server
+\end{itemize}
+
+\subsection{OpenMP}
+
+\textbf{Parallelization of OpenMP}
+\begin{itemize}
+    \item Multithreading: master thread forks specified number of worker threads and system divides taks among them. Threads then run concurrently, with runtime environment allocating threads to different processors (cores)
+\end{itemize}
+
+\begin{lstlisting}[language=C]
+    #include <stdio.h>
+    #include <omp.h>
+    
+    int main(void) {
+        int id;
+        #pragma omp parallel private(id)
+        {
+            id = omp_get_thread_num();
+            if (id % 2 == 1)
+                printf("Hello world from thread %d, I am odd\n", id);
+            else
+                printf("Hello world from thread %d, I am even\n", id);
+        }
+        return 0;
+    }
+\end{lstlisting}
+
+To run: 
+\texttt{gcc -fopenmp hello.c -o hello}
+\texttt{export OMP_NUM_THREADS=8}
+\texttt{./hello}
+
+Distribute iterations in a parallel region:
+\begin{lstlisting}[language=C]
+    int main() {
+        int i, n=16;
+        int a[16];
+
+        #pragma omp parallel for shared(n,a) private(i)
+        for (i=0; i<n; i++) {
+            a[i] = i+n;
+        }
+        return 0;
+    }
+\end{lstlisting}
+
+Can introduce dependency by having multiple parallel for loops:
+\begin{lstlisting}
+    #pragma omp parallel shared(n,a,b) private(i)
+    {
+        #pragma omp for
+        for(i=0;i<n;i++) a[i] = i+1; // implied barrier
+
+        #pragma omp for
+        for(i=0; i<n; i++) b[i] = 2*a[i]
+    }  // end of parallel region
+\end{lstlisting}
+
+\textbf{Understanding \texttt{\#pragma omp parallel}}
+\begin{itemize}
+    \item Creates a team of threads, with each thread executing the same code block in parallel
+    \item The number of threads is controlled by environment variable \texttt{OMP\_NUM\_THREADS} or can be set programmatically
+    \item Variables can be declared as:
+    \begin{itemize}
+        \item \texttt{private}: Each thread gets its own copy
+        \item \texttt{shared}: All threads access the same variable
+        \item \texttt{firstprivate}: Private variables initialized from shared variable
+        \item \texttt{lastprivate}: Final value of private variable copied back to shared variable
+    \end{itemize}
+    \item Code inside the parallel block is executed by all threads
+    \item Implicit barrier at end of parallel region - all threads synchronize before continuing
+\end{itemize}
+
+\textbf{Rules of Thumb for OpenMP}
+\begin{itemize}
+    \item Parallelize outermost loops when possible for better performance
+    \item Minimize data dependencies between iterations for optimal parallelization
+    \item Be careful with shared variables - use atomic or critical sections when needed
+    \item Consider loop scheduling strategies:
+    \begin{itemize}
+        \item \texttt{static} - Equal chunks to each thread (default)
+        \item \texttt{dynamic} - Threads get new chunk when finished previous
+        \item \texttt{guided} - Decreasing chunk sizes
+    \end{itemize}
+    \item Profile your code to identify parallelization overhead
+    \item Watch out for false sharing - pad arrays accessed by different threads
+    \item Keep parallel regions large enough to overcome threading overhead
+    \item Use \texttt{nowait} clause when synchronization isn't needed
+    \item Consider using \texttt{collapse} clause for nested loops
+\end{itemize}
+
+

@@ -180,6 +180,18 @@ INPUT chapters/250929_Pregel_A system for large scale graph processing.aux
 INPUT ./chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
 INPUT ./chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
 INPUT chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT ./chapters/251025_Compact Graph Representation.aux
+INPUT ./chapters/251025_Compact Graph Representation.aux
+INPUT chapters/251025_Compact Graph Representation.aux
 OUTPUT main.aux
 INPUT /usr/local/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 INPUT /usr/local/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -332,6 +344,47 @@ OUTPUT chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
 INPUT ./chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.tex
 INPUT ./chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.tex
 INPUT chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.tex
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.tex
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.tex
+OUTPUT chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.tex
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.tex
+INPUT chapters/251009_Making Caches Work for Graph Analytics.tex
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.tex
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.tex
+OUTPUT chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.tex
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.tex
+INPUT chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.tex
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.tex
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.tex
+OUTPUT chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.tex
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.tex
+INPUT chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.tex
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmr17.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmmi12.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmex10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/tfm/public/cm/cmcsc10.tfm
+INPUT ./chapters/251025_Compact Graph Representation.tex
+INPUT ./chapters/251025_Compact Graph Representation.tex
+OUTPUT chapters/251025_Compact Graph Representation.aux
+INPUT ./chapters/251025_Compact Graph Representation.tex
+INPUT ./chapters/251025_Compact Graph Representation.tex
+INPUT chapters/251025_Compact Graph Representation.tex
 INPUT main.aux
 INPUT ./chapters/250904_A Theoretician's Guide to the Experimental Analysis of Algorithms.aux
 INPUT ./chapters/250904_A Theoretician's Guide to the Experimental Analysis of Algorithms.aux
@@ -375,12 +428,26 @@ INPUT chapters/250929_Pregel_A system for large scale graph processing.aux
 INPUT ./chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
 INPUT ./chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
 INPUT chapters/251002_GraphChi: Large-Scale Graph Computation on Just a PC.aux
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT ./chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT chapters/251009_Making Caches Work for Graph Analytics.aux
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT ./chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT chapters/251014_GraphMineSuite: Enabling High-Performance and Programmable Graph Mining Algorithms with Set Algebra.aux
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT ./chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT chapters/251016_Parallel 𝑘-Core Decomposition_Theory and Practice.aux
+INPUT ./chapters/251025_Compact Graph Representation.aux
+INPUT ./chapters/251025_Compact Graph Representation.aux
+INPUT chapters/251025_Compact Graph Representation.aux
 INPUT ./main.out
 INPUT ./main.out
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT /usr/local/texlive/2024/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
